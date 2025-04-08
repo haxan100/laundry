@@ -10,7 +10,6 @@ class Admin extends MY_Controller
 		$this->load->model('RoleModel');
 		$this->load->model('AdminModel');
 		$this->load->model('HargaModel','harga');
-		$this->load->model('MitraModel');
 		$this->load->model('TokoModel');
 		$this->load->model('SettingModel');
 	}
@@ -233,49 +232,6 @@ class Admin extends MY_Controller
 		$obj['id_mitra'] = $id;
 		$obj['data'] = $data;
 		$this->render('Admin/Master_mitra_detail', $obj);
-	}
-	function need_grading() {
-		check_login();
-		check_access('need_grading');
-		$obj['pageTitle'] = 'need_grading';
-		$obj['page'] = 'need_grading';
-		$obj['ci'] = $this;
-		$this->render('Admin/need_grading', $obj);
-	}
-	public function need_grading_detail($id = null, $kode_trade = null) {
-		$this->load->helper('global_helper');
-
-		check_login();
-		check_access('need_grading');
-	
-		if (!$id || !$kode_trade) {
-			show_404();
-		}
-		$obj['pageTitle'] = 'Detail Need Grading';
-		$obj['page'] = 'need_grading_detail';
-		$obj['ci'] = $this;
-		$this->load->model('TradeModel');
-		$obj['tradeData'] = $this->TradeModel->getTradeByIdKode($id, $kode_trade);
-		$obj['mitra'] = $this->TokoModel->getMitraTokoByIdToko($obj['tradeData']->id_toko);
-		// Jika data tidak ditemukan, tampilkan 404
-		if (!$obj['tradeData']) {
-			show_404();
-		}
-		
-		$existing = $this->db->get_where('jawaban_waktu_admin', [
-			'id_transaction' => $obj['tradeData']->id_transaction_tradein
-		])->row();
-	
-		if (!$existing) {
-			$this->db->insert('jawaban_waktu_admin', [
-				'id_transaction' => $obj['tradeData']->id_transaction_tradein,
-				'id_toko' => $obj['tradeData']->id_toko,
-				'opened_at' => date('Y-m-d H:i:s')
-			]);
-		}
-
-		// var_dump($obj['tradeData']);die;
-		$this->render('Admin/need_grading_detail', $obj);
 	}
 	function slider() {
 		check_login();

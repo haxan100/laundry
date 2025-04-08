@@ -54,16 +54,6 @@
 						</a>
 					</li>
 				<?php endif; ?>
-
-				<?php if (check_access_sidebar('master_harga')): ?>
-					<li class="<?= $page === 'master_harga' ? 'mm-active' : '' ?>">
-						<a href="<?= base_url('Admin/Master_harga/index') ?>" class="waves-effect">
-							<i class="ti-wallet"></i>
-							<span>Master Harga</span>
-						</a>
-					</li>
-				<?php endif; ?>
-
 				<?php if (check_access_sidebar('master_role')): ?>
 					<li class="<?= $page === 'master_role' ? 'mm-active' : '' ?>">
 						<a href="<?= base_url('Admin/master_role') ?>" class="waves-effect">
@@ -87,24 +77,6 @@
 							<span>Master Mitra </span>
 						</a>
 					</li>
-					<li class="<?= $page === 'need_grading' ? 'mm-active' : '' ?>">
-    <a href="<?= base_url('Admin/need_grading') ?>" class="waves-effect position-relative">
-        <i class="ti-book"></i>
-        <span>Need Grading</span>
-        <?php 
-            $count_waiting_review = $this->db
-                ->where('status', 'waiting_review')
-                ->from('transaction_tradein')
-                ->count_all_results();
-
-            if ($count_waiting_review > 0): ?>
-                <span class="badge badge-danger notification-badge">
-                    <?= $count_waiting_review ?>
-                </span>
-        <?php endif; ?>
-    </a>
-</li>
-
 
 				<?php endif; ?>
 				<?php if (check_access_sidebar('terms')): ?>

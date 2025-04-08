@@ -12,7 +12,6 @@ class MY_Controller extends CI_Controller
 		$this->load->library(['session']);
 		$this->data['pageTitle'] = 'Default Title';
 		$this->load->model('SliderModel');
-		$this->load->model('TradeModel');
 		$this->load->helper('button');
 	}
 
