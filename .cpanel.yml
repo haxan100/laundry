@@ -1,0 +1,7 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/ibimcoi1/domains/plusminus.id/public_html/coba/
+    - /bin/cp * $DEPLOYPATH
+    # - /bin/cp style.css $DEPLOYPATH
+    # - /bin/cp style.css $DEPLOYPATH

@@ -1,0 +1,955 @@
+{
+	"info": {
+		"_postman_id": "03d28505-1bef-4970-ac31-3a701dd06a45",
+		"name": "PlusMinus",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10821349"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nomor_telpon",
+									"value": "8123456789",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verif Login OTP",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "nomor_telpon",
+									"value": "8123456789",
+									"type": "text"
+								},
+								{
+									"key": "kode_otp",
+									"value": "600573",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}api/verif_login_otp",
+							"host": [
+								"{{url}}api"
+							],
+							"path": [
+								"verif_login_otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login_username",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set(\"access_token\", jsonData.data.access_token);\r",
+									"pm.environment.set(\"refresh_token\", jsonData.data.refresh_token);\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 200ms\", function () {\r",
+									"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Validate the response schema for fields: code, status, message, data, access_token, and refresh_token\", function () {\r",
+									"  const responseData = pm.response.json();\r",
+									"  \r",
+									"  pm.expect(responseData).to.be.an('object');\r",
+									"  pm.expect(responseData).to.have.property('code');\r",
+									"  pm.expect(responseData).to.have.property('status');\r",
+									"  pm.expect(responseData).to.have.property('message');\r",
+									"  pm.expect(responseData).to.have.property('data');\r",
+									"  pm.expect(responseData.data).to.have.property('access_token');\r",
+									"  pm.expect(responseData.data).to.have.property('refresh_token');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "username",
+									"value": "toko-era",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "dG9rby1lcmE=",
+									"description": "dikirimdengan bash64",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/api/login_username",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"login_username"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{api}}profile",
+							"host": [
+								"{{api}}profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "refresh_token",
+									"value": "45df389c8c19011d2c17aff0d0a14c4b6180d0e5d79e8cd3772637f12187641c",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api}}refresh_token",
+							"host": [
+								"{{api}}refresh_token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiMSIsImlhdCI6MTczNzA5NjAzMSwiZXhwIjoxNzM3MDk5NjMxfQ.-LoPa8UjCY25r3Gk4nF8MtrjX3AwgF9OEn98frHhVi4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api}}/logout",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send_notification",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "100642717811096745792",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"fKG5VyMVmx_T1UmSJiHfET:APA91bFdIX3SxXZLpetzn8UY9vdBGKNpCyWmYxsw-r5bPMbRli9i6P91t_qmB-lPoXR0llfsrnrLqt6A892SjH1jIrbFb0uVk_Xgj3-6SqdMdTl3c5tIC48\",\r\n    \"title\": \"ini Data Json\",\r\n    \"body\": \"ini datajson body weh weh weh\",\r\n    \"data\": {\r\n        \"key1\": \"value1\",\r\n        \"key2\": \"value2\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{api}}send_notification",
+							"host": [
+								"{{api}}send_notification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login By Google",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/login_by_google",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"login_by_google"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "getPrice",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "payload",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "category",
+									"value": "smartphone",
+									"type": "text"
+								},
+								{
+									"key": "brand",
+									"value": "Apple",
+									"type": "text"
+								},
+								{
+									"key": "model",
+									"value": "iPhone 11 Pro Max",
+									"type": "text"
+								},
+								{
+									"key": "ram",
+									"value": "16GB",
+									"type": "text"
+								},
+								{
+									"key": "storage",
+									"value": "128GB",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api}}/getPrice",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"getPrice"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create_transaction",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "payload",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "category",
+									"value": "smartphone",
+									"type": "text"
+								},
+								{
+									"key": "brand",
+									"value": "Apple",
+									"type": "text"
+								},
+								{
+									"key": "model",
+									"value": "iPhone 16",
+									"type": "text"
+								},
+								{
+									"key": "ram",
+									"value": "16GB",
+									"type": "text"
+								},
+								{
+									"key": "storage",
+									"value": "128GB",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api}}/create_transaction",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"create_transaction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_transaction",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "payload",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "transaction_code",
+									"value": "KF46N5QL",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api}}/get_transaction",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"get_transaction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submit_quisioner",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "payload",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id_transaction",
+									"value": "31",
+									"description": "jawaban rata\" | y / n",
+									"type": "text"
+								},
+								{
+									"key": "quisioner_1",
+									"value": "y",
+									"description": "BC jamur, retak kecil, BC lecet, LCD lecet Halus",
+									"type": "text"
+								},
+								{
+									"key": "quisioner_2",
+									"value": "y",
+									"description": "BC pecah/ rusak, LCD Shadow, LCD terangkat, Bat Kembung",
+									"type": "text"
+								},
+								{
+									"key": "quisioner_3",
+									"value": "y",
+									"description": "lcd brubah, White-Black Spot, LCD Garis, FP bermasalah",
+									"type": "text"
+								},
+								{
+									"key": "quisioner_4",
+									"value": "y",
+									"description": "bzel lecet-berjamur,tombol hilang,bezel penyok,bezel lecet",
+									"type": "text"
+								},
+								{
+									"key": "quisioner_5",
+									"value": "['unit_only', 'with_box', 'with_cable']",
+									"description": "- unit_only\n- with_box\n- with_cable\n- with_adaptor",
+									"type": "text"
+								},
+								{
+									"key": "quisioner_6",
+									"value": "lcd",
+									"description": "active_service_coverage\ninactive_service_coverage\nlcd\nboard_machine\ncamera\nbattery\nquiz6_broken_other",
+									"type": "text"
+								},
+								{
+									"key": "imei",
+									"value": "56689565656565656",
+									"description": "imei",
+									"type": "text"
+								},
+								{
+									"key": "photo_front",
+									"type": "file",
+									"src": "/C:/xampp/htdocs/kabar/example/front.jpg"
+								},
+								{
+									"key": "photo_back",
+									"type": "file",
+									"src": "/C:/xampp/htdocs/kabar/example/back.jpg"
+								},
+								{
+									"key": "photo_top",
+									"type": "file",
+									"src": "/C:/xampp/htdocs/kabar/example/top.jpeg"
+								},
+								{
+									"key": "photo_bottom",
+									"type": "file",
+									"src": "/C:/xampp/htdocs/kabar/example/bottom.jpg"
+								},
+								{
+									"key": "photo_about_phone",
+									"type": "file",
+									"src": "/C:/xampp/htdocs/kabar/example/about.jpg"
+								},
+								{
+									"key": "photo_true_tone",
+									"type": "file",
+									"src": "/C:/xampp/htdocs/kabar/example/truetone.jpeg"
+								},
+								{
+									"key": "battery_health",
+									"value": "battery2",
+									"description": "battery1\nbattery2\nbattery3\nbattery4\nbattery5\nbattery6\nbattery7",
+									"type": "text"
+								},
+								{
+									"key": "photo_battery_health",
+									"type": "file",
+									"src": "/C:/xampp/htdocs/kabar/example/bth.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api}}/submit_quisioner",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"submit_quisioner"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "submit_software",
+					"request": {
+						"auth": {
+							"type": "jwt",
+							"jwt": [
+								{
+									"key": "addTokenTo",
+									"value": "header",
+									"type": "string"
+								},
+								{
+									"key": "secret",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "payload",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZF90b2tvIjoiNSIsImlhdCI6MTczODEzMTQ0NiwiZXhwIjoxNzM4MTM1MDQ2fQ.nrwCegC7GAZaijDaqOqSyGsFcxLoB7DyN71O8eg8RIg",
+									"type": "string"
+								},
+								{
+									"key": "algorithm",
+									"value": "HS256",
+									"type": "string"
+								},
+								{
+									"key": "isSecretBase64Encoded",
+									"value": false,
+									"type": "boolean"
+								},
+								{
+									"key": "headerPrefix",
+									"value": "Bearer",
+									"type": "string"
+								},
+								{
+									"key": "queryParamKey",
+									"value": "token",
+									"type": "string"
+								},
+								{
+									"key": "header",
+									"value": "{}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id_transaction",
+									"value": "31",
+									"description": "jawaban rata\" | working / not working",
+									"type": "text"
+								},
+								{
+									"key": "cpu",
+									"value": "working",
+									"description": " working / not working",
+									"type": "text"
+								},
+								{
+									"key": "hardisk",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "battery",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "button_silent",
+									"value": "working",
+									"description": "ios only",
+									"type": "text"
+								},
+								{
+									"key": "button_volume_up",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "button_volume_down",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "button_power",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "camera_back",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "camera_front",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "touchscreen",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "biometric",
+									"value": "working",
+									"description": "working, not_working, not_setup ",
+									"type": "text"
+								},
+								{
+									"key": "sim_card",
+									"value": "working",
+									"type": "text"
+								},
+								{
+									"key": "biometric_type",
+									"value": "fingerprint",
+									"description": "faceid,fingerprint",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api}}/submit_software",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"submit_software"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{api}}/history",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "statusnya",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{api}}/history",
+							"host": [
+								"{{api}}"
+							],
+							"path": [
+								"history"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "getWaAdmin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{api}}/wa_admin",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"wa_admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getVersion",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "{{api}}/setting",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"setting"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
