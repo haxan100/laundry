@@ -9,6 +9,7 @@ class Owner extends MY_Controller
         $this->load->model('OwnerModel');
         $this->load->model('RoleModel');
         $this->load->model('AdminModel');
+        $this->load->library('encryption');
         $this->check_owner_login();
     }
 
@@ -190,7 +191,103 @@ class Owner extends MY_Controller
         $obj['ci'] = $this;
         $obj['page'] = 'master_admin';
         $obj['pageTitle'] = 'Master Admin';
+        $obj['admins'] = $this->AdminModel->getAdminsWithRole();
+        $obj['roles'] = $this->RoleModel->getAll();
         $this->load->view('owner/master_admin', $obj);
+    }
+
+    public function add_admin()
+    {
+        $data = [
+            'username' => $this->input->post('username'),
+            'password' => $this->encrypt_password($this->input->post('password')),
+            'nama_lengkap' => $this->input->post('nama_lengkap'),
+            'email' => $this->input->post('email'),
+            'telepon' => $this->input->post('telepon'),
+            'id_role' => $this->input->post('id_role'),
+            'status' => $this->input->post('status'),
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+        
+        // Check if username already exists
+        if ($this->AdminModel->findByUsername($data['username'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Username sudah digunakan']);
+            return;
+        }
+        
+        if ($this->AdminModel->insert($data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Admin berhasil ditambahkan']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan admin']);
+        }
+    }
+
+    public function get_admin()
+    {
+        $id = $this->input->post('id');
+        $admin = $this->AdminModel->getAdminWithRole($id);
+        if ($admin) {
+            echo json_encode(['status' => 'success', 'data' => $admin]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Admin tidak ditemukan']);
+        }
+    }
+
+    public function update_admin()
+    {
+        $id = $this->input->post('id');
+        $data = [
+            'username' => $this->input->post('username'),
+            'nama_lengkap' => $this->input->post('nama_lengkap'),
+            'email' => $this->input->post('email'),
+            'telepon' => $this->input->post('telepon'),
+            'id_role' => $this->input->post('id_role'),
+            'status' => $this->input->post('status'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+        
+        // Check if username already exists (exclude current record)
+        $existing = $this->AdminModel->findByUsername($data['username']);
+        if ($existing && $existing->id_admin != $id) {
+            echo json_encode(['status' => 'error', 'message' => 'Username sudah digunakan']);
+            return;
+        }
+        
+        // Add password if provided
+        $password = $this->input->post('password');
+        if (!empty($password)) {
+            $data['password'] = $this->encrypt_password($password);
+        }
+        
+        if ($this->AdminModel->update($id, $data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Admin berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate admin']);
+        }
+    }
+
+    public function delete_admin()
+    {
+        $id = $this->input->post('id');
+        
+        if ($this->AdminModel->delete($id)) {
+            echo json_encode(['status' => 'success', 'message' => 'Admin berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus admin']);
+        }
+    }
+
+    public function get_admins_ajax()
+    {
+        $admins = $this->AdminModel->getAdminsWithRole();
+        echo json_encode($admins);
+    }
+
+    private function encrypt_password($password)
+    {
+        // Use the same encryption method as existing admin system
+        // Based on database, admin uses encrypted password, owner uses MD5
+        return $this->encryption->encrypt($password);
     }
 
     public function get_roles_ajax()
