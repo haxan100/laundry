@@ -10,6 +10,7 @@ class Owner extends MY_Controller
         $this->load->model('RoleModel');
         $this->load->model('AdminModel');
         $this->load->model('CustomerModel');
+        $this->load->model('TierDiscountModel');
         $this->load->library('encryption');
         $this->check_owner_login();
     }
@@ -424,6 +425,49 @@ class Owner extends MY_Controller
     {
         $customers = $this->CustomerModel->getAll();
         echo json_encode($customers);
+    }
+
+    public function setting_discount()
+    {
+        $obj['ci'] = $this;
+        $obj['page'] = 'setting_discount';
+        $obj['pageTitle'] = 'Setting Diskon Tier';
+        $obj['discounts'] = $this->TierDiscountModel->getDiscountsWithCustomerCount();
+        $this->load->view('owner/setting_discount', $obj);
+    }
+
+    public function update_tier_discounts()
+    {
+        $discounts = $this->input->post('discounts');
+        
+        if (!$discounts) {
+            echo json_encode(['status' => 'error', 'message' => 'Data tidak valid']);
+            return;
+        }
+        
+        $success_count = 0;
+        foreach ($discounts as $tier => $data) {
+            $update_data = [
+                'discount_amount' => (int)$data['discount_amount'],
+                'is_active' => (int)$data['is_active'],
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+            
+            if ($this->TierDiscountModel->updateDiscount($tier, $update_data)) {
+                $success_count++;
+            }
+        }
+        
+        if ($success_count > 0) {
+            echo json_encode(['status' => 'success', 'message' => 'Pengaturan diskon berhasil disimpan']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menyimpan pengaturan']);
+        }
+    }
+
+    public function get_tier_discount($tier_level)
+    {
+        return $this->TierDiscountModel->getDiscountAmount($tier_level);
     }
 
     public function logout()

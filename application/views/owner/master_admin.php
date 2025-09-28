@@ -126,6 +126,15 @@
                                 <span>Master Customer</span>
                             </a>
                         </li>
+
+                        <li class="menu-title">Settings</li>
+
+                        <li>
+                            <a href="<?= base_url('owner/setting_discount') ?>" class="waves-effect">
+                                <i class="mdi mdi-percent"></i>
+                                <span>Setting Diskon Tier</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
