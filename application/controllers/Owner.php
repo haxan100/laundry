@@ -32,7 +32,61 @@ class Owner extends MY_Controller
         $obj['ci'] = $this;
         $obj['page'] = 'master_role';
         $obj['pageTitle'] = 'Master Role';
+        $obj['roles'] = $this->RoleModel->getAll();
         $this->load->view('owner/master_role', $obj);
+    }
+
+    public function add_role()
+    {
+        $data = [
+            'nama_role' => $this->input->post('nama_role'),
+            'permissions' => json_encode($this->input->post('permissions')),
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+        
+        if ($this->RoleModel->insertRole($data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Role berhasil ditambahkan']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan role']);
+        }
+    }
+
+    public function get_role()
+    {
+        $id = $this->input->post('id');
+        $role = $this->RoleModel->findRoleById($id);
+        if ($role) {
+            $role->permissions = json_decode($role->permissions, true);
+            echo json_encode(['status' => 'success', 'data' => $role]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Role tidak ditemukan']);
+        }
+    }
+
+    public function update_role()
+    {
+        $id = $this->input->post('id');
+        $data = [
+            'nama_role' => $this->input->post('nama_role'),
+            'permissions' => json_encode($this->input->post('permissions')),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+        
+        if ($this->RoleModel->updateRole($id, $data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Role berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate role']);
+        }
+    }
+
+    public function delete_role()
+    {
+        $id = $this->input->post('id');
+        if ($this->RoleModel->deleteRole($id)) {
+            echo json_encode(['status' => 'success', 'message' => 'Role berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus role']);
+        }
     }
 
     public function master_owner()

@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class RoleModel extends MY_Model
 {
-	protected $table = 'role'; // Nama tabel
+	protected $table = 'roles'; // Nama tabel
 	protected $primaryKey = 'id_role'; // Primary key
 
 	public function getRolesWithPermissions()
@@ -39,9 +39,9 @@ class RoleModel extends MY_Model
 	}
 	public function dt_roles($post)
 	{
-		$columns = $this->db->list_fields('role'); // Ambil semua kolom tabel role
+		$columns = $this->db->list_fields('roles'); // Ambil semua kolom tabel roles
 
-		$this->db->from('role');
+		$this->db->from('roles');
 		if (!empty($post['search']['value'])) {
 			$this->db->group_start();
 			foreach ($columns as $column) {
@@ -84,6 +84,26 @@ class RoleModel extends MY_Model
         $this->db->from('admin');
         $this->db->where('id_role', $roleId);
         return $this->db->count_all_results();
+    }
+
+    public function insertRole($data)
+    {
+        return $this->db->insert($this->table, $data);
+    }
+
+    public function updateRole($id, $data)
+    {
+        return $this->db->where('id_role', $id)->update($this->table, $data);
+    }
+
+    public function deleteRole($id)
+    {
+        return $this->db->where('id_role', $id)->delete($this->table);
+    }
+
+    public function findRoleById($id)
+    {
+        return $this->db->get_where($this->table, ['id_role' => $id])->row();
     }
 
 }
