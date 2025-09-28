@@ -319,9 +319,28 @@
     <script src="<?= base_url('assets/assets/js/app.js') ?>"></script>
 
     <script>
+        let roleTable;
+        
         $(document).ready(function() {
-            $('#roleTable').DataTable();
+            roleTable = $('#roleTable').DataTable();
         });
+
+        function reloadTable() {
+            $.get('<?= base_url("owner/get_roles_ajax") ?>', function(data) {
+                roleTable.clear();
+                data.forEach(function(role, index) {
+                    const permissions = role.permissions ? JSON.parse(role.permissions).map(p => `<span class="badge bg-primary me-1">${p}</span>`).join('') : '';
+                    roleTable.row.add([
+                        index + 1,
+                        role.nama_role,
+                        permissions,
+                        `<button class="btn btn-sm btn-warning" onclick="editRole(${role.id_role})"><i class="mdi mdi-pencil"></i></button>
+                         <button class="btn btn-sm btn-danger" onclick="deleteRole(${role.id_role})"><i class="mdi mdi-delete"></i></button>`
+                    ]);
+                });
+                roleTable.draw();
+            }, 'json');
+        }
 
         // Add Role
         $('#addRoleForm').on('submit', function(e) {
@@ -344,9 +363,8 @@
                         text: 'Role berhasil ditambahkan',
                         timer: 1500,
                         showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
                     });
+                    reloadTable();
                 } else {
                     Swal.fire('Error!', response.message, 'error');
                 }
@@ -375,9 +393,8 @@
                         text: 'Role berhasil diupdate',
                         timer: 1500,
                         showConfirmButton: false
-                    }).then(() => {
-                        location.reload();
                     });
+                    reloadTable();
                 } else {
                     Swal.fire('Error!', response.message, 'error');
                 }
@@ -435,9 +452,8 @@
                                 text: response.message,
                                 timer: 1500,
                                 showConfirmButton: false
-                            }).then(() => {
-                                location.reload();
                             });
+                            reloadTable();
                         } else {
                             Swal.fire('Error!', response.message, 'error');
                         }

@@ -94,7 +94,95 @@ class Owner extends MY_Controller
         $obj['ci'] = $this;
         $obj['page'] = 'master_owner';
         $obj['pageTitle'] = 'Master Owner';
+        $obj['owners'] = $this->OwnerModel->getAll();
         $this->load->view('owner/master_owner', $obj);
+    }
+
+    public function add_owner()
+    {
+        $data = [
+            'username' => $this->input->post('username'),
+            'password' => md5($this->input->post('password')),
+            'nama_lengkap' => $this->input->post('nama_lengkap'),
+            'email' => $this->input->post('email'),
+            'telepon' => $this->input->post('telepon'),
+            'alamat' => $this->input->post('alamat'),
+            'status' => $this->input->post('status'),
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+        
+        // Check if username already exists
+        if ($this->OwnerModel->findOwner($data['username'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Username sudah digunakan']);
+            return;
+        }
+        
+        if ($this->OwnerModel->insert($data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Owner berhasil ditambahkan']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan owner']);
+        }
+    }
+
+    public function get_owner()
+    {
+        $id = $this->input->post('id');
+        $owner = $this->OwnerModel->getById($id);
+        if ($owner) {
+            echo json_encode(['status' => 'success', 'data' => $owner]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Owner tidak ditemukan']);
+        }
+    }
+
+    public function update_owner()
+    {
+        $id = $this->input->post('id');
+        $data = [
+            'username' => $this->input->post('username'),
+            'nama_lengkap' => $this->input->post('nama_lengkap'),
+            'email' => $this->input->post('email'),
+            'telepon' => $this->input->post('telepon'),
+            'alamat' => $this->input->post('alamat'),
+            'status' => $this->input->post('status'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+        
+        // Check if username already exists (exclude current record)
+        $existing = $this->OwnerModel->findOwner($data['username']);
+        if ($existing && $existing->id_owner != $id) {
+            echo json_encode(['status' => 'error', 'message' => 'Username sudah digunakan']);
+            return;
+        }
+        
+        // Add password if provided
+        $password = $this->input->post('password');
+        if (!empty($password)) {
+            $data['password'] = md5($password);
+        }
+        
+        if ($this->OwnerModel->update($id, $data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Owner berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate owner']);
+        }
+    }
+
+    public function delete_owner()
+    {
+        $id = $this->input->post('id');
+        
+        // Prevent deleting current logged in owner
+        if ($id == $this->session->userdata('user_id')) {
+            echo json_encode(['status' => 'error', 'message' => 'Tidak dapat menghapus akun yang sedang login']);
+            return;
+        }
+        
+        if ($this->OwnerModel->delete($id)) {
+            echo json_encode(['status' => 'success', 'message' => 'Owner berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus owner']);
+        }
     }
 
     public function master_admin()
@@ -103,6 +191,18 @@ class Owner extends MY_Controller
         $obj['page'] = 'master_admin';
         $obj['pageTitle'] = 'Master Admin';
         $this->load->view('owner/master_admin', $obj);
+    }
+
+    public function get_roles_ajax()
+    {
+        $roles = $this->RoleModel->getAll();
+        echo json_encode($roles);
+    }
+
+    public function get_owners_ajax()
+    {
+        $owners = $this->OwnerModel->getAll();
+        echo json_encode($owners);
     }
 
     public function logout()

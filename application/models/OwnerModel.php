@@ -34,4 +34,9 @@ class OwnerModel extends CI_Model
     {
         return $this->db->where('id_owner', $id)->delete($this->table);
     }
+
+    public function getById($id)
+    {
+        return $this->findById($id);
+    }
 }
