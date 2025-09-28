@@ -9,6 +9,7 @@ class Owner extends MY_Controller
         $this->load->model('OwnerModel');
         $this->load->model('RoleModel');
         $this->load->model('AdminModel');
+        $this->load->model('CustomerModel');
         $this->load->library('encryption');
         $this->check_owner_login();
     }
@@ -300,6 +301,129 @@ class Owner extends MY_Controller
     {
         $owners = $this->OwnerModel->getAll();
         echo json_encode($owners);
+    }
+
+    public function master_customer()
+    {
+        $obj['ci'] = $this;
+        $obj['page'] = 'master_customer';
+        $obj['pageTitle'] = 'Master Customer';
+        $obj['customers'] = $this->CustomerModel->getAll();
+        $this->load->view('owner/master_customer', $obj);
+    }
+
+    public function add_customer()
+    {
+        $telepon = $this->input->post('telepon');
+        
+        // Validate phone format (89xxxxxxxx)
+        if (!preg_match('/^89[0-9]{8,12}$/', $telepon)) {
+            echo json_encode(['status' => 'error', 'message' => 'Format telepon harus 89xxxxxxxx']);
+            return;
+        }
+        
+        $data = [
+            'nama' => $this->input->post('nama'),
+            'email' => $this->input->post('email'),
+            'telepon' => $telepon,
+            'password' => md5($this->input->post('password')),
+            'tier_level' => $this->input->post('tier_level'),
+            'created_at' => date('Y-m-d H:i:s')
+        ];
+        
+        // Check if email already exists
+        if (!empty($data['email']) && $this->CustomerModel->findByEmail($data['email'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Email sudah digunakan']);
+            return;
+        }
+        
+        // Check if telepon already exists
+        if ($this->CustomerModel->findByTelepon($data['telepon'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Nomor telepon sudah digunakan']);
+            return;
+        }
+        
+        if ($this->CustomerModel->insert($data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Customer berhasil ditambahkan']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan customer']);
+        }
+    }
+
+    public function get_customer()
+    {
+        $id = $this->input->post('id');
+        $customer = $this->CustomerModel->getById($id);
+        if ($customer) {
+            echo json_encode(['status' => 'success', 'data' => $customer]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Customer tidak ditemukan']);
+        }
+    }
+
+    public function update_customer()
+    {
+        $id = $this->input->post('id');
+        $telepon = $this->input->post('telepon');
+        
+        // Validate phone format
+        if (!preg_match('/^89[0-9]{8,12}$/', $telepon)) {
+            echo json_encode(['status' => 'error', 'message' => 'Format telepon harus 89xxxxxxxx']);
+            return;
+        }
+        
+        $data = [
+            'nama' => $this->input->post('nama'),
+            'email' => $this->input->post('email'),
+            'telepon' => $telepon,
+            'tier_level' => $this->input->post('tier_level'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+        
+        // Check if email already exists (exclude current record)
+        if (!empty($data['email'])) {
+            $existing = $this->CustomerModel->findByEmail($data['email']);
+            if ($existing && $existing->id_customer != $id) {
+                echo json_encode(['status' => 'error', 'message' => 'Email sudah digunakan']);
+                return;
+            }
+        }
+        
+        // Check if telepon already exists (exclude current record)
+        $existing = $this->CustomerModel->findByTelepon($data['telepon']);
+        if ($existing && $existing->id_customer != $id) {
+            echo json_encode(['status' => 'error', 'message' => 'Nomor telepon sudah digunakan']);
+            return;
+        }
+        
+        // Add password if provided
+        $password = $this->input->post('password');
+        if (!empty($password)) {
+            $data['password'] = md5($password);
+        }
+        
+        if ($this->CustomerModel->update($id, $data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Customer berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate customer']);
+        }
+    }
+
+    public function delete_customer()
+    {
+        $id = $this->input->post('id');
+        
+        if ($this->CustomerModel->delete($id)) {
+            echo json_encode(['status' => 'success', 'message' => 'Customer berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus customer']);
+        }
+    }
+
+    public function get_customers_ajax()
+    {
+        $customers = $this->CustomerModel->getAll();
+        echo json_encode($customers);
     }
 
     public function logout()

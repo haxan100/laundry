@@ -106,7 +106,7 @@
                             </a>
                         </li>
 
-                        <li class="mm-active">
+                        <li>
                             <a href="<?= base_url('owner/master_owner') ?>" class="waves-effect">
                                 <i class="mdi mdi-crown"></i>
                                 <span>Master Owner</span>
@@ -120,7 +120,7 @@
                             </a>
                         </li>
 
-                        <li>
+                        <li class="mm-active">
                             <a href="<?= base_url('owner/master_customer') ?>" class="waves-effect">
                                 <i class="ti-id-badge"></i>
                                 <span>Master Customer</span>
@@ -146,8 +146,8 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="float-end d-none d-md-block">
-                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addOwnerModal">
-                                        <i class="mdi mdi-plus me-2"></i> Tambah Owner
+                                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCustomerModal">
+                                        <i class="mdi mdi-plus me-2"></i> Tambah Customer
                                     </button>
                                 </div>
                             </div>
@@ -158,41 +158,51 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-body">
-                                    <h4 class="card-title">Data Owner</h4>
+                                    <h4 class="card-title">Data Customer</h4>
                                     <div class="table-responsive">
-                                        <table id="ownerTable" class="table table-bordered">
+                                        <table id="customerTable" class="table table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
-                                                    <th>Username</th>
-                                                    <th>Nama Lengkap</th>
+                                                    <th>Nama</th>
                                                     <th>Email</th>
                                                     <th>Telepon</th>
-                                                    <th>Status</th>
+                                                    <th>Tier Level</th>
+                                                    <th>Last Login</th>
+                                                    <th>Last Wash</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php $no = 1; foreach($owners as $owner): ?>
+                                                <?php $no = 1; foreach($customers as $customer): ?>
                                                 <tr>
                                                     <td><?= $no++ ?></td>
-                                                    <td><?= $owner->username ?></td>
-                                                    <td><?= $owner->nama_lengkap ?></td>
-                                                    <td><?= $owner->email ?></td>
-                                                    <td><?= $owner->telepon ?></td>
+                                                    <td><?= $customer->nama ?></td>
+                                                    <td><?= $customer->email ?></td>
+                                                    <td><?= $customer->telepon ?></td>
                                                     <td>
-                                                        <span class="badge bg-<?= $owner->status == 'aktif' ? 'success' : 'danger' ?>">
-                                                            <?= ucfirst($owner->status) ?>
+                                                        <?php
+                                                        $tier_colors = [
+                                                            'bronze' => 'warning',
+                                                            'silver' => 'secondary', 
+                                                            'gold' => 'success',
+                                                            'platinum' => 'primary'
+                                                        ];
+                                                        ?>
+                                                        <span class="badge bg-<?= $tier_colors[$customer->tier_level] ?>">
+                                                            <?= ucfirst($customer->tier_level) ?>
                                                         </span>
                                                     </td>
+                                                    <td><?= $customer->last_login ? date('d/m/Y H:i', strtotime($customer->last_login)) : '-' ?></td>
+                                                    <td><?= $customer->last_wash ? date('d/m/Y H:i', strtotime($customer->last_wash)) : '-' ?></td>
                                                     <td>
-                                                        <button class="btn btn-sm btn-info" onclick="viewOwner(<?= $owner->id_owner ?>)">
+                                                        <button class="btn btn-sm btn-info" onclick="viewCustomer(<?= $customer->id_customer ?>)">
                                                             <i class="mdi mdi-eye"></i>
                                                         </button>
-                                                        <button class="btn btn-sm btn-warning" onclick="editOwner(<?= $owner->id_owner ?>)">
+                                                        <button class="btn btn-sm btn-warning" onclick="editCustomer(<?= $customer->id_customer ?>)">
                                                             <i class="mdi mdi-pencil"></i>
                                                         </button>
-                                                        <button class="btn btn-sm btn-danger" onclick="deleteOwner(<?= $owner->id_owner ?>)">
+                                                        <button class="btn btn-sm btn-danger" onclick="deleteCustomer(<?= $customer->id_customer ?>)">
                                                             <i class="mdi mdi-delete"></i>
                                                         </button>
                                                     </td>
@@ -221,33 +231,19 @@
         </div>
     </div>
 
-    <!-- Modal Add Owner -->
-    <div class="modal fade" id="addOwnerModal" tabindex="-1">
+    <!-- Modal Add Customer -->
+    <div class="modal fade" id="addCustomerModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Owner Baru</h5>
+                    <h5 class="modal-title">Tambah Customer Baru</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="addOwnerForm">
+                <form id="addCustomerForm">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Username <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="username" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Password <span class="text-danger">*</span></label>
-                                    <input type="password" class="form-control" name="password" required>
-                                </div>
-                            </div>
-                        </div>
                         <div class="mb-3">
-                            <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="nama_lengkap" required>
+                            <label class="form-label">Nama <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="nama" required>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -258,21 +254,30 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Telepon</label>
-                                    <input type="text" class="form-control" name="telepon">
+                                    <label class="form-label">Telepon <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="telepon" placeholder="89xxxxxxxx" required>
+                                    <small class="text-muted">Format: 89xxxxxxxx (tanpa 0)</small>
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Alamat</label>
-                            <textarea class="form-control" name="alamat" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" name="status">
-                                <option value="aktif">Aktif</option>
-                                <option value="nonaktif">Non Aktif</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Password <span class="text-danger">*</span></label>
+                                    <input type="password" class="form-control" name="password" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Tier Level</label>
+                                    <select class="form-select" name="tier_level">
+                                        <option value="bronze">Bronze</option>
+                                        <option value="silver">Silver</option>
+                                        <option value="gold">Gold</option>
+                                        <option value="platinum">Platinum</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -284,34 +289,20 @@
         </div>
     </div>
 
-    <!-- Modal Edit Owner -->
-    <div class="modal fade" id="editOwnerModal" tabindex="-1">
+    <!-- Modal Edit Customer -->
+    <div class="modal fade" id="editCustomerModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Owner</h5>
+                    <h5 class="modal-title">Edit Customer</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="editOwnerForm">
+                <form id="editCustomerForm">
                     <input type="hidden" name="id" id="edit_id">
                     <div class="modal-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Username <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" name="username" id="edit_username" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Password Baru</label>
-                                    <input type="password" class="form-control" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
-                                </div>
-                            </div>
-                        </div>
                         <div class="mb-3">
-                            <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" name="nama_lengkap" id="edit_nama_lengkap" required>
+                            <label class="form-label">Nama <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="nama" id="edit_nama" required>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
@@ -322,21 +313,29 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label class="form-label">Telepon</label>
-                                    <input type="text" class="form-control" name="telepon" id="edit_telepon">
+                                    <label class="form-label">Telepon <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="telepon" id="edit_telepon" required>
                                 </div>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Alamat</label>
-                            <textarea class="form-control" name="alamat" id="edit_alamat" rows="3"></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Status</label>
-                            <select class="form-select" name="status" id="edit_status">
-                                <option value="aktif">Aktif</option>
-                                <option value="nonaktif">Non Aktif</option>
-                            </select>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Password Baru</label>
+                                    <input type="password" class="form-control" name="password" placeholder="Kosongkan jika tidak ingin mengubah">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Tier Level</label>
+                                    <select class="form-select" name="tier_level" id="edit_tier_level">
+                                        <option value="bronze">Bronze</option>
+                                        <option value="silver">Silver</option>
+                                        <option value="gold">Gold</option>
+                                        <option value="platinum">Platinum</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -348,12 +347,12 @@
         </div>
     </div>
 
-    <!-- Modal View Owner -->
-    <div class="modal fade" id="viewOwnerModal" tabindex="-1">
+    <!-- Modal View Customer -->
+    <div class="modal fade" id="viewCustomerModal" tabindex="-1">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Detail Owner</h5>
+                    <h5 class="modal-title">Detail Customer</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -361,14 +360,9 @@
                         <div class="col-md-6">
                             <table class="table table-borderless">
                                 <tr>
-                                    <td><strong>Username</strong></td>
+                                    <td><strong>Nama</strong></td>
                                     <td>:</td>
-                                    <td id="view_username"></td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Nama Lengkap</strong></td>
-                                    <td>:</td>
-                                    <td id="view_nama_lengkap"></td>
+                                    <td id="view_nama"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Email</strong></td>
@@ -380,14 +374,24 @@
                                     <td>:</td>
                                     <td id="view_telepon"></td>
                                 </tr>
+                                <tr>
+                                    <td><strong>Tier Level</strong></td>
+                                    <td>:</td>
+                                    <td><span id="view_tier_level" class="badge"></span></td>
+                                </tr>
                             </table>
                         </div>
                         <div class="col-md-6">
                             <table class="table table-borderless">
                                 <tr>
-                                    <td><strong>Status</strong></td>
+                                    <td><strong>Last Login</strong></td>
                                     <td>:</td>
-                                    <td><span id="view_status" class="badge"></span></td>
+                                    <td id="view_last_login"></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Last Wash</strong></td>
+                                    <td>:</td>
+                                    <td id="view_last_wash"></td>
                                 </tr>
                                 <tr>
                                     <td><strong>Dibuat</strong></td>
@@ -400,12 +404,6 @@
                                     <td id="view_updated_at"></td>
                                 </tr>
                             </table>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            <strong>Alamat:</strong>
-                            <p id="view_alamat" class="mt-2"></p>
                         </div>
                     </div>
                 </div>
@@ -428,75 +426,97 @@
     <script src="<?= base_url('assets/assets/js/app.js') ?>"></script>
 
     <script>
-        let ownerTable;
+        let customerTable;
         
         $(document).ready(function() {
-            ownerTable = $('#ownerTable').DataTable();
+            customerTable = $('#customerTable').DataTable();
+            
+            // Format telepon input
+            $('input[name="telepon"]').on('input', function() {
+                let value = $(this).val().replace(/\D/g, '');
+                if (value.startsWith('0')) {
+                    value = value.substring(1);
+                }
+                if (!value.startsWith('89') && value.length > 0) {
+                    value = '89' + value.replace(/^89/, '');
+                }
+                $(this).val(value);
+            });
         });
 
-        function reloadOwnerTable() {
-            $.get('<?= base_url("owner/get_owners_ajax") ?>', function(data) {
-                ownerTable.clear();
-                data.forEach(function(owner, index) {
-                    const statusBadge = `<span class="badge bg-${owner.status === 'aktif' ? 'success' : 'danger'}">${owner.status.charAt(0).toUpperCase() + owner.status.slice(1)}</span>`;
-                    ownerTable.row.add([
+        function reloadCustomerTable() {
+            $.get('<?= base_url("owner/get_customers_ajax") ?>', function(data) {
+                customerTable.clear();
+                data.forEach(function(customer, index) {
+                    const tierColors = {
+                        'bronze': 'warning',
+                        'silver': 'secondary', 
+                        'gold': 'success',
+                        'platinum': 'primary'
+                    };
+                    const tierBadge = `<span class="badge bg-${tierColors[customer.tier_level]}">${customer.tier_level.charAt(0).toUpperCase() + customer.tier_level.slice(1)}</span>`;
+                    const lastLogin = customer.last_login ? new Date(customer.last_login).toLocaleDateString('id-ID') + ' ' + new Date(customer.last_login).toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'}) : '-';
+                    const lastWash = customer.last_wash ? new Date(customer.last_wash).toLocaleDateString('id-ID') + ' ' + new Date(customer.last_wash).toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'}) : '-';
+                    
+                    customerTable.row.add([
                         index + 1,
-                        owner.username,
-                        owner.nama_lengkap,
-                        owner.email || '-',
-                        owner.telepon || '-',
-                        statusBadge,
-                        `<button class="btn btn-sm btn-info" onclick="viewOwner(${owner.id_owner})"><i class="mdi mdi-eye"></i></button>
-                         <button class="btn btn-sm btn-warning" onclick="editOwner(${owner.id_owner})"><i class="mdi mdi-pencil"></i></button>
-                         <button class="btn btn-sm btn-danger" onclick="deleteOwner(${owner.id_owner})"><i class="mdi mdi-delete"></i></button>`
+                        customer.nama,
+                        customer.email || '-',
+                        customer.telepon,
+                        tierBadge,
+                        lastLogin,
+                        lastWash,
+                        `<button class="btn btn-sm btn-info" onclick="viewCustomer(${customer.id_customer})"><i class="mdi mdi-eye"></i></button>
+                         <button class="btn btn-sm btn-warning" onclick="editCustomer(${customer.id_customer})"><i class="mdi mdi-pencil"></i></button>
+                         <button class="btn btn-sm btn-danger" onclick="deleteCustomer(${customer.id_customer})"><i class="mdi mdi-delete"></i></button>`
                     ]);
                 });
-                ownerTable.draw();
+                customerTable.draw();
             }, 'json');
         }
 
-        // Add Owner
-        $('#addOwnerForm').on('submit', function(e) {
+        // Add Customer
+        $('#addCustomerForm').on('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             
-            $.post('<?= base_url("owner/add_owner") ?>', data, function(response) {
+            $.post('<?= base_url("owner/add_customer") ?>', data, function(response) {
                 if(response.status === 'success') {
-                    $('#addOwnerModal').modal('hide');
+                    $('#addCustomerModal').modal('hide');
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: 'Owner berhasil ditambahkan',
+                        text: 'Customer berhasil ditambahkan',
                         timer: 1500,
                         showConfirmButton: false
                     });
-                    reloadOwnerTable();
+                    reloadCustomerTable();
                 } else {
                     Swal.fire('Error!', response.message, 'error');
                 }
             }, 'json');
         });
 
-        // Edit Owner
-        $('#editOwnerForm').on('submit', function(e) {
+        // Edit Customer
+        $('#editCustomerForm').on('submit', function(e) {
             e.preventDefault();
             
             const formData = new FormData(this);
             const data = Object.fromEntries(formData);
             
-            $.post('<?= base_url("owner/update_owner") ?>', data, function(response) {
+            $.post('<?= base_url("owner/update_customer") ?>', data, function(response) {
                 if(response.status === 'success') {
-                    $('#editOwnerModal').modal('hide');
+                    $('#editCustomerModal').modal('hide');
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: 'Owner berhasil diupdate',
+                        text: 'Customer berhasil diupdate',
                         timer: 1500,
                         showConfirmButton: false
                     });
-                    reloadOwnerTable();
+                    reloadCustomerTable();
                 } else {
                     Swal.fire('Error!', response.message, 'error');
                 }
@@ -504,62 +524,66 @@
         });
 
         // Reset forms
-        $('#addOwnerModal').on('hidden.bs.modal', function() {
-            $('#addOwnerForm')[0].reset();
+        $('#addCustomerModal').on('hidden.bs.modal', function() {
+            $('#addCustomerForm')[0].reset();
         });
 
-        $('#editOwnerModal').on('hidden.bs.modal', function() {
-            $('#editOwnerForm')[0].reset();
+        $('#editCustomerModal').on('hidden.bs.modal', function() {
+            $('#editCustomerForm')[0].reset();
         });
 
-        function viewOwner(id) {
-            $.post('<?= base_url("owner/get_owner") ?>', {id: id}, function(response) {
+        function viewCustomer(id) {
+            $.post('<?= base_url("owner/get_customer") ?>', {id: id}, function(response) {
                 if(response.status === 'success') {
                     const data = response.data;
+                    const tierColors = {
+                        'bronze': 'warning',
+                        'silver': 'secondary', 
+                        'gold': 'success',
+                        'platinum': 'primary'
+                    };
                     
-                    $('#view_username').text(data.username);
-                    $('#view_nama_lengkap').text(data.nama_lengkap);
+                    $('#view_nama').text(data.nama);
                     $('#view_email').text(data.email || '-');
-                    $('#view_telepon').text(data.telepon || '-');
-                    $('#view_alamat').text(data.alamat || '-');
-                    $('#view_created_at').text(data.created_at);
-                    $('#view_updated_at').text(data.updated_at || '-');
+                    $('#view_telepon').text(data.telepon);
+                    $('#view_last_login').text(data.last_login ? new Date(data.last_login).toLocaleString('id-ID') : '-');
+                    $('#view_last_wash').text(data.last_wash ? new Date(data.last_wash).toLocaleString('id-ID') : '-');
+                    $('#view_created_at').text(new Date(data.created_at).toLocaleString('id-ID'));
+                    $('#view_updated_at').text(data.updated_at ? new Date(data.updated_at).toLocaleString('id-ID') : '-');
                     
-                    const statusBadge = $('#view_status');
-                    statusBadge.text(data.status.charAt(0).toUpperCase() + data.status.slice(1));
-                    statusBadge.removeClass('bg-success bg-danger');
-                    statusBadge.addClass(data.status === 'aktif' ? 'bg-success' : 'bg-danger');
+                    const tierBadge = $('#view_tier_level');
+                    tierBadge.text(data.tier_level.charAt(0).toUpperCase() + data.tier_level.slice(1));
+                    tierBadge.removeClass('bg-warning bg-secondary bg-success bg-primary');
+                    tierBadge.addClass('bg-' + tierColors[data.tier_level]);
                     
-                    $('#viewOwnerModal').modal('show');
+                    $('#viewCustomerModal').modal('show');
                 } else {
                     Swal.fire('Error!', response.message, 'error');
                 }
             }, 'json');
         }
 
-        function editOwner(id) {
-            $.post('<?= base_url("owner/get_owner") ?>', {id: id}, function(response) {
+        function editCustomer(id) {
+            $.post('<?= base_url("owner/get_customer") ?>', {id: id}, function(response) {
                 if(response.status === 'success') {
                     const data = response.data;
                     
-                    $('#edit_id').val(data.id_owner);
-                    $('#edit_username').val(data.username);
-                    $('#edit_nama_lengkap').val(data.nama_lengkap);
+                    $('#edit_id').val(data.id_customer);
+                    $('#edit_nama').val(data.nama);
                     $('#edit_email').val(data.email);
                     $('#edit_telepon').val(data.telepon);
-                    $('#edit_alamat').val(data.alamat);
-                    $('#edit_status').val(data.status);
+                    $('#edit_tier_level').val(data.tier_level);
                     
-                    $('#editOwnerModal').modal('show');
+                    $('#editCustomerModal').modal('show');
                 } else {
                     Swal.fire('Error!', response.message, 'error');
                 }
             }, 'json');
         }
 
-        function deleteOwner(id) {
+        function deleteCustomer(id) {
             Swal.fire({
-                title: 'Hapus Owner?',
+                title: 'Hapus Customer?',
                 text: "Data yang dihapus tidak dapat dikembalikan!",
                 icon: 'warning',
                 showCancelButton: true,
@@ -569,7 +593,7 @@
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.post('<?= base_url("owner/delete_owner") ?>', {id: id}, function(response) {
+                    $.post('<?= base_url("owner/delete_customer") ?>', {id: id}, function(response) {
                         if(response.status === 'success') {
                             Swal.fire({
                                 icon: 'success',
@@ -578,7 +602,7 @@
                                 timer: 1500,
                                 showConfirmButton: false
                             });
-                            reloadOwnerTable();
+                            reloadCustomerTable();
                         } else {
                             Swal.fire('Error!', response.message, 'error');
                         }

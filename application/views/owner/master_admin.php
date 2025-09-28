@@ -119,6 +119,13 @@
                                 <span>Master Admin</span>
                             </a>
                         </li>
+
+                        <li>
+                            <a href="<?= base_url('owner/master_customer') ?>" class="waves-effect">
+                                <i class="ti-id-badge"></i>
+                                <span>Master Customer</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
