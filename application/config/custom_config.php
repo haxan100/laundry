@@ -16,3 +16,4 @@ $config['countdown'] = 30;
 
 
 $config['tampilGambar'] = false;
+$config['title'] = 'Laundry Amanah';
