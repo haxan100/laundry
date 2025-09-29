@@ -229,12 +229,6 @@ class Kasir extends MY_Controller
         $transaction_id = $this->TransaksiModel->createTransaction($data);
         
         if ($transaction_id) {
-            // Update customer transaction count if customer exists
-            if ($data['id_customer']) {
-                $this->db->set('total_transaksi', 'total_transaksi + 1', FALSE);
-                $this->db->where('id_customer', $data['id_customer']);
-                $this->db->update('customers');
-            }
             
             echo json_encode([
                 'status' => 'success',

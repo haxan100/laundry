@@ -1488,23 +1488,37 @@
                         catatan: $('#catatanText').val()
                     };
                     
-                    $.post('<?= base_url("kasir/create_order") ?>', transactionData, function(response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Transaksi Berhasil!',
-                                text: response.message,
-                                timer: 2000,
-                                showConfirmButton: false
-                            });
-                            
-                            // Reset form
-                            resetForm();
-                        } else {
+                    $.ajax({
+                        url: '<?= base_url("kasir/create_order") ?>',
+                        type: 'POST',
+                        dataType: 'json',
+                        data: transactionData,
+                        success: function(response) {
+                            if (response.status === 'success') {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Transaksi Berhasil!',
+                                    text: response.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                                
+                                // Reset form
+                                resetForm();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: response.message || 'Terjadi kesalahan saat memproses transaksi'
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX Error:', error);
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Gagal!',
-                                text: response.message || 'Terjadi kesalahan saat memproses transaksi'
+                                title: 'Error!',
+                                text: 'Terjadi kesalahan saat memproses transaksi'
                             });
                         }
                     });
