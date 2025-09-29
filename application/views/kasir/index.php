@@ -579,6 +579,105 @@
             animation: pulse 2s infinite;
         }
 
+        /* Price Information Panel Styles */
+        .price-info-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            overflow: hidden;
+        }
+
+        .price-info-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12px 16px;
+            font-weight: 600;
+        }
+
+        .price-info-header h6 {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .price-info-body {
+            padding: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .price-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .price-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateX(4px);
+        }
+
+        .price-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .price-item-name {
+            font-weight: 500;
+            color: var(--gray-700);
+            font-size: 13px;
+        }
+
+        .price-item-range {
+            font-size: 11px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .price-item-value {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 13px;
+        }
+
+        .ongkir-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+            transition: all 0.3s ease;
+        }
+
+        .ongkir-item:hover {
+            background: rgba(16, 185, 129, 0.1);
+            transform: translateX(4px);
+        }
+
+        .ongkir-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .ongkir-item-name {
+            font-weight: 500;
+            color: var(--gray-700);
+            font-size: 13px;
+        }
+
+        .ongkir-item-value {
+            font-weight: 600;
+            color: var(--success);
+            font-size: 13px;
+        }
+
         @media (max-width: 768px) {
             .pos-container {
                 grid-template-columns: 1fr;
@@ -702,6 +801,32 @@
             color: #f8fafc;
             border-color: var(--success);
         }
+
+        /* Dark mode for price info panels */
+        [data-theme="dark"] .price-info-card {
+            background: #1e293b;
+            border-color: #475569;
+        }
+
+        [data-theme="dark"] .price-info-body {
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .price-item,
+        [data-theme="dark"] .ongkir-item {
+            background: #334155;
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .price-item-name,
+        [data-theme="dark"] .ongkir-item-name {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .price-item-range {
+            color: #94a3b8;
+        }
     </style>
 </head>
 <body>
@@ -735,6 +860,8 @@
             </div>
             
             <div class="pos-content">
+
+                
                 <div class="laundry-form">
                     <div class="mb-3">
                         <label class="form-label">Berat Laundry (Kg)</label>
@@ -759,6 +886,22 @@
                     <div class="mb-3">
                         <label class="form-label">Catatan</label>
                         <textarea class="form-control" id="catatanText" rows="2" placeholder="Catatan tambahan..."></textarea>
+                    </div>
+                    
+                    <!-- Price Information -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-tshirt me-2"></i>Daftar Harga Laundry</h6>
+                                <div id="laundryPriceList">Loading...</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="alert alert-success">
+                                <h6><i class="fas fa-truck me-2"></i>Tarif Ongkir</h6>
+                                <div id="ongkirPriceList">Loading...</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -920,6 +1063,7 @@
             loadLaundryServices();
             loadOngkirOptions();
             loadCustomers();
+            loadPriceInfo();
             initTheme();
             
             // Show initial breakdown
@@ -1213,9 +1357,6 @@
             container.html(`
                 <div class="calculation-details">
                     <h6 class="fw-bold mb-3"><i class="fas fa-weight me-2"></i>${data.tier}</h6>
-                    <div class="alert alert-success mb-0">
-                        <small><i class="fas fa-check-circle me-1"></i>Perhitungan berhasil!</small>
-                    </div>
                 </div>
             `);
             
@@ -1561,6 +1702,80 @@
                     });
                 }
             });
+        }
+
+        function loadPriceInfo() {
+            console.log('Loading price info...');
+            
+            // Load laundry prices
+            $.ajax({
+                url: '<?= base_url("kasir/get_laundry_prices") ?>',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Laundry prices response:', response);
+                    if (response.status === 'success') {
+                        displayLaundryPrices(response.data);
+                    } else {
+                        $('#laundryPriceList').html('Tidak ada data harga');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to load laundry prices:', error);
+                    $('#laundryPriceList').html('Error loading data');
+                }
+            });
+            
+            // Load ongkir prices
+            $.ajax({
+                url: '<?= base_url("kasir/get_ongkir_prices") ?>',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    console.log('Ongkir prices response:', response);
+                    if (response.status === 'success') {
+                        displayOngkirPrices(response.data);
+                    } else {
+                        $('#ongkirPriceList').html('Tidak ada data ongkir');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Failed to load ongkir prices:', error);
+                    $('#ongkirPriceList').html('Error loading data');
+                }
+            });
+        }
+        
+        function displayLaundryPrices(prices) {
+            console.log('displayLaundryPrices called with:', prices);
+            let html = '';
+            if (prices && prices.length > 0) {
+                html = '<ul class="mb-0">';
+                prices.forEach(price => {
+                    html += `<li>${price.nama_layanan}: <strong>Rp ${formatNumber(price.harga_per_kilo)}/kg</strong></li>`;
+                });
+                html += '</ul>';
+            } else {
+                html = 'Tidak ada data harga';
+            }
+            console.log('Setting laundry HTML:', html);
+            $('#laundryPriceList').html(html);
+        }
+        
+        function displayOngkirPrices(ongkirs) {
+            console.log('displayOngkirPrices called with:', ongkirs);
+            let html = '';
+            if (ongkirs && ongkirs.length > 0) {
+                html = '<ul class="mb-0">';
+                ongkirs.forEach(ongkir => {
+                    html += `<li>${ongkir.nama_area}: <strong>Rp ${formatNumber(ongkir.harga_ongkir)}/km</strong></li>`;
+                });
+                html += '</ul>';
+            } else {
+                html = 'Tidak ada data ongkir';
+            }
+            console.log('Setting ongkir HTML:', html);
+            $('#ongkirPriceList').html(html);
         }
 
         function formatNumber(num) {

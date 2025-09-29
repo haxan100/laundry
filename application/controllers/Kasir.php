@@ -259,6 +259,18 @@ class Kasir extends MY_Controller
         }
     }
 
+    public function get_laundry_prices()
+    {
+        $prices = $this->db->get('setting_harga_laundry')->result();
+        echo json_encode(['status' => 'success', 'data' => $prices]);
+    }
+    
+    public function get_ongkir_prices()
+    {
+        $ongkirs = $this->db->get('setting_harga_ongkir')->result();
+        echo json_encode(['status' => 'success', 'data' => $ongkirs]);
+    }
+
     public function logout()
     {
         $this->session->unset_userdata(['user_id', 'username', 'id_role', 'user_type', 'nama_lengkap']);
