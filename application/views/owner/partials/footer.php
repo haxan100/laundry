@@ -25,9 +25,9 @@
     
     <script>
         $(document).ready(function() {
-            // DataTables
-            if ($('.table').length && typeof $.fn.DataTable !== 'undefined') {
-                $('.table').DataTable({
+            // DataTables - Skip auto-init for tables with custom initialization
+            if ($('.table:not(#customerTable, #adminTable, #ownerTable, #roleTable)').length && typeof $.fn.DataTable !== 'undefined') {
+                $('.table:not(#customerTable, #adminTable, #ownerTable, #roleTable)').DataTable({
                     responsive: true,
                     pageLength: 10,
                     language: {
