@@ -26,6 +26,14 @@ class Kasir extends MY_Controller
         $data['today_transactions'] = $this->TransaksiModel->getTodayTransactionCount($this->session->userdata('user_id'));
         $this->load->view('kasir/index', $data);
     }
+    
+    public function transactions()
+    {
+        $data['title'] = 'Daftar Transaksi - ' . $this->config->item('title');
+        $data['user'] = $this->AdminModel->getById($this->session->userdata('user_id'));
+        $data['transactions'] = $this->TransaksiModel->getTodayTransactions($this->session->userdata('user_id'));
+        $this->load->view('kasir/transactions', $data);
+    }
 
     public function get_customers()
     {
@@ -105,6 +113,89 @@ class Kasir extends MY_Controller
     {
         $services = $this->LaundryModel->getHargaLaundry();
         echo json_encode(['status' => 'success', 'data' => $services]);
+    }
+    
+    public function calculate_price()
+    {
+        $berat = (float) $this->input->post('berat');
+        $jarak_km = (float) $this->input->post('jarak_km');
+        $is_delivery = (bool) $this->input->post('is_delivery');
+        $customer_id = $this->input->post('customer_id');
+        
+        // Determine price per kg based on weight tiers
+        if ($berat >= 20) {
+            $harga_per_kg = 2000;
+            $tier = 'Tier 4 (20kg+)';
+        } elseif ($berat >= 10) {
+            $harga_per_kg = 2500;
+            $tier = 'Tier 3 (10-19kg)';
+        } elseif ($berat >= 5) {
+            $harga_per_kg = 3500;
+            $tier = 'Tier 2 (5-9kg)';
+        } else {
+            $harga_per_kg = 5000;
+            $tier = 'Tier 1 (1-4kg)';
+        }
+        
+        $subtotal_laundry = $berat * $harga_per_kg;
+        
+        // Calculate delivery cost based on distance tiers
+        $ongkir = 0;
+        $ongkir_tier = '';
+        if ($is_delivery && $jarak_km > 0) {
+            if ($jarak_km > 20) {
+                $ongkir = $jarak_km * 5000;
+                $ongkir_tier = '20+ km (Rp 5.000/km)';
+            } elseif ($jarak_km > 10) {
+                $ongkir = $jarak_km * 4000;
+                $ongkir_tier = '11-20 km (Rp 4.000/km)';
+            } elseif ($jarak_km > 5) {
+                $ongkir = $jarak_km * 3000;
+                $ongkir_tier = '6-10 km (Rp 3.000/km)';
+            } else {
+                $ongkir = $jarak_km * 2000;
+                $ongkir_tier = '0-5 km (Rp 2.000/km)';
+            }
+        }
+        
+        // Get customer discount
+        $discount_amount = 0;
+        $customer_tier = '';
+        if ($customer_id) {
+            $customer = $this->db->get_where('customers', ['id_customer' => $customer_id])->row();
+            if ($customer && $customer->tier_level) {
+                $tier_discounts = [
+                    'bronze' => 5000,
+                    'silver' => 7000,
+                    'gold' => 10000,
+                    'platinum' => 15000
+                ];
+                $discount_amount = $tier_discounts[$customer->tier_level] ?? 0;
+                $customer_tier = ucfirst($customer->tier_level);
+            }
+        }
+        
+        $subtotal_before_discount = $subtotal_laundry + $ongkir;
+        $subtotal_after_discount = $subtotal_before_discount - $discount_amount;
+        $total = $subtotal_after_discount;
+        
+        echo json_encode([
+            'status' => 'success',
+            'data' => [
+                'berat' => $berat,
+                'tier' => $tier,
+                'harga_per_kg' => $harga_per_kg,
+                'subtotal_laundry' => $subtotal_laundry,
+                'jarak_km' => $jarak_km,
+                'ongkir' => $ongkir,
+                'ongkir_tier' => $ongkir_tier,
+                'discount_amount' => $discount_amount,
+                'customer_tier' => $customer_tier,
+                'subtotal_before_discount' => $subtotal_before_discount,
+                'subtotal_after_discount' => $subtotal_after_discount,
+                'total' => $total
+            ]
+        ]);
     }
 
     public function get_ongkir()

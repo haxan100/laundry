@@ -172,7 +172,7 @@
 
         .pos-content {
             flex: 1;
-            padding: 32px;
+            padding: 20px;
             overflow-y: auto;
             position: relative;
             z-index: 5;
@@ -181,7 +181,7 @@
         .laundry-form {
             background: white;
             border-radius: var(--border-radius);
-            padding: 32px;
+            padding: 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--gray-200);
             position: relative;
@@ -272,7 +272,7 @@
         }
 
         .customer-section {
-            padding: 24px;
+            padding: 16px;
             border-bottom: 1px solid var(--gray-200);
             background: white;
         }
@@ -392,7 +392,7 @@
 
         .calculation-result {
             flex: 1;
-            padding: 24px;
+            padding: 16px;
             overflow-y: auto;
             background: white;
         }
@@ -420,29 +420,74 @@
         .price-breakdown {
             background: white;
             border-radius: 12px;
-            padding: 24px;
+            padding: 16px;
             border: 1px solid var(--gray-200);
+        }
+        
+        .breakdown-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+        }
+        
+        .breakdown-section {
+            margin-bottom: 12px;
+            padding: 12px;
+            background: var(--gray-100);
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--gray-700);
+        }
+        
+        .tier-info {
+            font-size: 11px;
+            color: var(--gray-500);
+            margin-top: 4px;
+            font-style: italic;
+        }
+        
+        .breakdown-divider {
+            height: 1px;
+            background: var(--gray-300);
+            margin: 8px 0;
         }
 
         .total-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 12px;
-            padding: 8px 0;
-            font-size: 15px;
+            margin-bottom: 8px;
+            padding: 4px 0;
+            font-size: 14px;
         }
 
         .total-row.final {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
-            color: var(--dark);
-            border-top: 2px solid var(--gray-200);
-            padding-top: 16px;
+            color: var(--primary);
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            padding: 16px;
+            border-radius: 8px;
             margin-top: 16px;
+            border: 2px solid var(--primary);
         }
 
         .payment-section {
-            padding: 24px;
+            padding: 16px;
             border-top: 1px solid var(--gray-200);
             background: white;
         }
@@ -498,6 +543,16 @@
             transform: none;
             box-shadow: none;
         }
+        
+        .checkout-btn.btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            animation: pulse 2s infinite;
+        }
+        
+        .checkout-btn.btn-secondary {
+            background: var(--gray-400);
+            animation: none;
+        }
 
         @keyframes slideIn {
             from {
@@ -550,8 +605,18 @@
         }
 
         /* Dark mode styles */
+        [data-theme="dark"] {
+            --light: #1e293b;
+            --gray-100: #334155;
+            --gray-200: #475569;
+            --gray-300: #64748b;
+            --gray-700: #e2e8f0;
+            --gray-900: #f8fafc;
+        }
+
         [data-theme="dark"] body {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #f8fafc;
         }
 
         [data-theme="dark"] .laundry-form,
@@ -561,21 +626,81 @@
         [data-theme="dark"] .calculation-result,
         [data-theme="dark"] .payment-section,
         [data-theme="dark"] .price-breakdown {
-            background: var(--light);
-            color: var(--gray-900);
+            background: #1e293b;
+            color: #f8fafc;
+            border-color: #475569;
         }
 
-        [data-theme="dark"] .delivery-section {
-            background: var(--gray-100);
+        [data-theme="dark"] .delivery-section,
+        [data-theme="dark"] .breakdown-section {
+            background: #334155;
+            color: #f8fafc;
+            border-color: #64748b;
         }
 
-        [data-theme="dark"] .customer-dropdown {
-            background: var(--light);
-            border-color: var(--gray-300);
+        [data-theme="dark"] .form-control,
+        [data-theme="dark"] .form-select {
+            background: #334155;
+            color: #f8fafc;
+            border-color: #64748b;
         }
 
-        [data-theme="dark"] .calculation-details {
-            background: var(--gray-100);
+        [data-theme="dark"] .form-control:focus,
+        [data-theme="dark"] .form-select:focus {
+            background: #334155;
+            color: #f8fafc;
+            border-color: var(--primary);
+        }
+
+        [data-theme="dark"] .customer-tab {
+            background: #334155;
+            color: #e2e8f0;
+            border-color: #64748b;
+        }
+
+        [data-theme="dark"] .customer-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+
+        [data-theme="dark"] .selected-customer-card {
+            background: #334155;
+            color: #f8fafc;
+            border-color: var(--primary);
+        }
+
+        [data-theme="dark"] .payment-method {
+            background: #334155;
+            color: #f8fafc;
+            border-color: #64748b;
+        }
+
+        [data-theme="dark"] .payment-method.active {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        [data-theme="dark"] .total-row,
+        [data-theme="dark"] .section-title,
+        [data-theme="dark"] .detail-row {
+            color: #f8fafc;
+        }
+
+        [data-theme="dark"] .form-label {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .alert-info {
+            background: rgba(99, 102, 241, 0.1);
+            color: #f8fafc;
+            border-color: var(--primary);
+        }
+
+        [data-theme="dark"] .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #f8fafc;
+            border-color: var(--success);
         }
     </style>
 </head>
@@ -586,9 +711,16 @@
             <div class="pos-header">
                 <h1><i class="fas fa-tshirt"></i>Laundry POS</h1>
                 <div class="transaction-info">
-                    <div class="today-stats animate-pulse">
+                    <div class="today-stats animate-pulse" id="todayStatsContainer">
                         <i class="fas fa-chart-line me-2"></i>
                         <span>Transaksi Hari Ini: <strong><?= $today_transactions ?></strong></span>
+                        <?php if ($today_transactions > 3): ?>
+                            <div class="mt-2">
+                                <a href="<?= base_url('kasir/transactions') ?>" class="btn btn-sm btn-outline-light">
+                                    <i class="fas fa-list me-1"></i>Lihat Transaksi Lainnya
+                                </a>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="user-info">
@@ -604,41 +736,30 @@
             
             <div class="pos-content">
                 <div class="laundry-form">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Pilih Layanan</label>
-                            <select class="form-select" id="layananSelect">
-                                <option value="">-- Pilih Layanan --</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Berat (Kg)</label>
-                            <input type="number" class="form-control" id="beratKilo" placeholder="0.0" min="0.5" step="0.5">
-                        </div>
+                    <div class="mb-3">
+                        <label class="form-label">Berat Laundry (Kg)</label>
+                        <input type="number" class="form-control" id="beratKilo" placeholder="Masukkan berat dalam kg" min="0.5" step="0.5">
+                        <small class="text-muted">Minimal 0.5 kg</small>
                     </div>
                     
-                    <div class="delivery-section mb-4">
-                        <div class="form-check mb-3">
+                    <div class="delivery-section mb-3">
+                        <div class="form-check mb-2">
                             <input class="form-check-input" type="checkbox" id="deliveryCheck">
                             <label class="form-check-label fw-bold" for="deliveryCheck">
-                                <i class="fas fa-truck me-2"></i>Antar Jemput
+                                <i class="fas fa-truck me-2"></i>Kirim ke Alamat
                             </label>
                         </div>
                         <div id="deliveryOptions" style="display: none;">
-                            <select class="form-select" id="ongkirSelect">
-                                <option value="">-- Pilih Area --</option>
-                            </select>
+                            <label class="form-label">Jarak (KM)</label>
+                            <input type="number" class="form-control" id="jarakKm" placeholder="Masukkan jarak dalam km" min="1" step="0.5">
+                            <small class="text-muted">Biaya pengiriman: Rp 2.000/km</small>
                         </div>
                     </div>
                     
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="form-label">Catatan</label>
-                        <textarea class="form-control" id="catatanText" rows="3" placeholder="Catatan tambahan..."></textarea>
+                        <textarea class="form-control" id="catatanText" rows="2" placeholder="Catatan tambahan..."></textarea>
                     </div>
-                    
-                    <button class="btn btn-primary w-100" id="hitungBtn">
-                        <i class="fas fa-calculator me-2"></i>Hitung Total
-                    </button>
                 </div>
             </div>
         </div>
@@ -688,6 +809,8 @@
                             <p class="mb-0"><i class="fas fa-star me-2"></i>Tier: <span id="selectedCustomerTier" class="tier-badge"></span></p>
                         </div>
                     </div>
+                    
+
                 </div>
                 
                 <div id="customerNew" class="customer-form" style="display: none;">
@@ -713,25 +836,52 @@
             </div>
             
             <div class="price-breakdown" id="priceBreakdown" style="display: none;">
+                <div class="breakdown-header">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-calculator me-2"></i>Detail Harga</h6>
+                </div>
+                
+                <div class="breakdown-section">
+                    <div class="section-title">LAUNDRY</div>
+                    <div class="detail-row">
+                        <span id="beratDetail">0 kg</span>
+                        <span>×</span>
+                        <span id="hargaPerKgDetail">Rp 0</span>
+                        <span>=</span>
+                        <span id="subtotalLaundry" class="fw-bold">Rp 0</span>
+                    </div>
+                </div>
+                
+                <div class="breakdown-section" id="ongkirSection" style="display: none;">
+                    <div class="section-title">PENGIRIMAN</div>
+                    <div class="detail-row">
+                        <span id="jarakDetail">0 km</span>
+                        <span>×</span>
+                        <span id="tarifOngkirDetail">Rp 0</span>
+                        <span>=</span>
+                        <span id="ongkirAmount" class="fw-bold">Rp 0</span>
+                    </div>
+                    <div class="tier-info" id="ongkirTierInfo"></div>
+                </div>
+                
+                <div class="breakdown-divider"></div>
+                
                 <div class="total-row">
-                    <span><i class="fas fa-tshirt me-2"></i>Laundry:</span>
-                    <span id="subtotalLaundry">Rp 0</span>
+                    <span>Subtotal:</span>
+                    <span id="subtotalBeforeDiscount" class="fw-bold">Rp 0</span>
                 </div>
-                <div class="total-row" id="ongkirRow" style="display: none;">
-                    <span><i class="fas fa-truck me-2"></i>Ongkir:</span>
-                    <span id="ongkirAmount">Rp 0</span>
-                </div>
+                
                 <div class="total-row" id="discountRow" style="display: none;">
-                    <span><i class="fas fa-percent me-2"></i>Diskon:</span>
-                    <span id="discountAmount" class="text-success">-Rp 0</span>
+                    <span class="text-success">Diskon <span id="customerTierText"></span>:</span>
+                    <span id="discountAmount" class="text-success fw-bold">-Rp 0</span>
                 </div>
-                <div class="total-row">
-                    <span><i class="fas fa-receipt me-2"></i>Pajak (10%):</span>
-                    <span id="tax">Rp 0</span>
-                </div>
+                
+
+                
+                <div class="breakdown-divider"></div>
+                
                 <div class="total-row final">
-                    <span><i class="fas fa-money-bill-wave me-2"></i>Total:</span>
-                    <span id="grandTotal">Rp 0</span>
+                    <span><i class="fas fa-money-bill-wave me-2"></i>TOTAL BAYAR:</span>
+                    <span id="grandTotal" class="fw-bold">Rp 0</span>
                 </div>
             </div>
             
@@ -746,7 +896,7 @@
                     </div>
                 </div>
                 
-                <button class="checkout-btn" id="checkoutBtn" disabled>
+                <button class="checkout-btn btn-secondary" id="checkoutBtn" disabled>
                     <i class="fas fa-check me-2"></i>Proses Transaksi
                 </button>
             </div>
@@ -772,6 +922,9 @@
             loadCustomers();
             initTheme();
             
+            // Show initial breakdown
+            resetCalculation();
+            
             // Theme toggle
             $('#themeToggle').click(function() {
                 toggleTheme();
@@ -783,13 +936,19 @@
                     $('#deliveryOptions').slideDown(300);
                 } else {
                     $('#deliveryOptions').slideUp(300);
-                    $('#ongkirSelect').val('');
+                    $('#jarakKm').val('');
                 }
+                calculatePrice();
             });
             
-            // Calculate button
-            $('#hitungBtn').click(function() {
-                calculateTotal();
+            // Auto calculate on weight input
+            $('#beratKilo').on('input', function() {
+                calculatePrice();
+            });
+            
+            // Auto calculate on distance input
+            $('#jarakKm').on('input', function() {
+                calculatePrice();
             });
             
             // Payment method selection
@@ -811,13 +970,15 @@
                     $('#customerTamu').fadeIn(300);
                 } else if (selectedCustomerType === 'customer') {
                     $('#customerExisting').fadeIn(300);
-                    // Force reload customers when tab is clicked
                     setTimeout(() => {
                         loadCustomers();
                     }, 100);
                 } else {
                     $('#customerNew').fadeIn(300);
                 }
+                
+                // Recalculate price when customer type changes
+                calculatePrice();
             });
             
             // Customer select change
@@ -829,9 +990,13 @@
                     console.log('Found customer:', customer);
                     if (customer) {
                         selectCustomer(customer);
+                        // Recalculate price with customer discount
+                        calculatePrice();
                     }
                 } else {
                     clearCustomerSelection();
+                    // Recalculate price without discount
+                    calculatePrice();
                 }
             });
             
@@ -974,113 +1139,124 @@
 
 
 
-        function calculateTotal() {
-            const layananId = $('#layananSelect').val();
+        function calculatePrice() {
             const berat = parseFloat($('#beratKilo').val()) || 0;
             const isDelivery = $('#deliveryCheck').is(':checked');
-            const ongkirId = $('#ongkirSelect').val();
+            const jarakKm = parseFloat($('#jarakKm').val()) || 0;
+            const customerId = selectedCustomer ? selectedCustomer.id_customer : null;
             
-            if (!layananId || berat <= 0) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Data Belum Lengkap',
-                    text: 'Pilih layanan dan masukkan berat!'
-                });
+            if (berat <= 0) {
+                resetCalculation();
                 return;
             }
             
-            const selectedService = laundryServices.find(s => s.id_harga == layananId);
-            const hargaPerKilo = parseFloat(selectedService.harga_per_kilo);
-            const subtotalLaundry = hargaPerKilo * berat;
-            
-            let hargaOngkir = 0;
-            if (isDelivery && ongkirId) {
-                const selectedOngkir = ongkirOptions.find(o => o.id_ongkir == ongkirId);
-                hargaOngkir = parseFloat(selectedOngkir.harga_ongkir);
-            }
-            
-            // Get customer discount
-            let discountPercent = 0;
-            if (selectedCustomerType === 'customer' && selectedCustomer) {
-                const tierDiscounts = {
-                    'bronze': 0,
-                    'silver': 5,
-                    'gold': 10,
-                    'platinum': 15
-                };
-                discountPercent = tierDiscounts[selectedCustomer.tier_level] || 0;
-            }
-            
-            const discountAmount = (subtotalLaundry + hargaOngkir) * (discountPercent / 100);
-            
-            displayCalculation({
-                layanan: selectedService.nama_layanan,
-                berat: berat,
-                hargaPerKilo: hargaPerKilo,
-                subtotalLaundry: subtotalLaundry,
-                hargaOngkir: hargaOngkir,
-                discountPercent: discountPercent,
-                discountAmount: discountAmount
+            $.ajax({
+                url: '<?= base_url("kasir/calculate_price") ?>',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    berat: berat,
+                    jarak_km: jarakKm,
+                    is_delivery: isDelivery,
+                    customer_id: customerId
+                },
+                success: function(response) {
+                    if (response.status === 'success') {
+                        calculationData = response.data;
+                        displayCalculation(response.data);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX Error:', error);
+                }
             });
         }
-
-        function displayCalculation(data) {
-            calculationData = data;
-            const container = $('#calculationResult');
-            const breakdown = $('#priceBreakdown');
-            
-            const subtotalBeforeDiscount = data.subtotalLaundry + data.hargaOngkir;
-            const subtotalAfterDiscount = subtotalBeforeDiscount - data.discountAmount;
-            const pajak = subtotalAfterDiscount * 0.1;
-            const total = subtotalAfterDiscount + pajak;
-            
-            container.html(`
-                <div class="calculation-details">
-                    <h6 class="fw-bold mb-3"><i class="fas fa-tshirt me-2"></i>${data.layanan}</h6>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Berat:</span>
-                        <strong>${data.berat} kg</strong>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span>Harga/kg:</span>
-                        <strong>Rp ${formatNumber(data.hargaPerKilo)}</strong>
-                    </div>
-                    ${data.hargaOngkir > 0 ? `
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>Ongkir:</span>
-                            <strong>Rp ${formatNumber(data.hargaOngkir)}</strong>
-                        </div>
-                    ` : ''}
-                    ${data.discountPercent > 0 ? `
-                        <div class="d-flex justify-content-between mb-2 text-success">
-                            <span>Diskon:</span>
-                            <strong>${data.discountPercent}%</strong>
-                        </div>
-                    ` : ''}
+        
+        function resetCalculation() {
+            $('#calculationResult').html(`
+                <div class="empty-calculation">
+                    <i class="fas fa-calculator"></i>
+                    <p>Masukkan berat untuk kalkulasi</p>
                 </div>
             `);
             
-            $('#subtotalLaundry').text('Rp ' + formatNumber(data.subtotalLaundry));
+            // Reset breakdown to show empty state
+            $('#priceBreakdown').show();
+            $('#beratDetail').text('0 kg');
+            $('#hargaPerKgDetail').text('Rp 0');
+            $('#subtotalLaundry').text('Rp 0');
+            $('#ongkirSection').hide();
+            $('#subtotalBeforeDiscount').text('Rp 0');
+            $('#discountRow').hide();
+            $('#grandTotal').text('Rp 0');
             
-            if (data.hargaOngkir > 0) {
-                $('#ongkirRow').show();
-                $('#ongkirAmount').text('Rp ' + formatNumber(data.hargaOngkir));
+            $('#checkoutBtn').prop('disabled', true).removeClass('btn-success').addClass('btn-secondary');
+            calculationData = null;
+        }
+
+        function displayCalculation(data) {
+            console.log('=== DISPLAY CALCULATION START ===');
+            console.log('Data received:', data);
+            
+            // Update detailed breakdown - FORCE UPDATE
+            console.log('Updating beratDetail...');
+            $('#beratDetail').text(data.berat + ' kg');
+            
+            console.log('Updating hargaPerKgDetail...');
+            $('#hargaPerKgDetail').text('Rp ' + formatNumber(data.harga_per_kg));
+            
+            console.log('Updating subtotalLaundry...');
+            $('#subtotalLaundry').text('Rp ' + formatNumber(data.subtotal_laundry));
+            
+            // Update calculation result
+            const container = $('#calculationResult');
+            container.html(`
+                <div class="calculation-details">
+                    <h6 class="fw-bold mb-3"><i class="fas fa-weight me-2"></i>${data.tier}</h6>
+                    <div class="alert alert-success mb-0">
+                        <small><i class="fas fa-check-circle me-1"></i>Perhitungan berhasil!</small>
+                    </div>
+                </div>
+            `);
+            
+            // Show/hide delivery section
+            if (data.ongkir > 0) {
+                $('#ongkirSection').show();
+                $('#jarakDetail').text(data.jarak_km + ' km');
+                const rateMatch = data.ongkir_tier.match(/Rp ([\d\.]+)/);
+                const rate = rateMatch ? rateMatch[1] : '0';
+                $('#tarifOngkirDetail').text('Rp ' + rate);
+                $('#ongkirAmount').text('Rp ' + formatNumber(data.ongkir));
+                $('#ongkirTierInfo').text(data.ongkir_tier);
             } else {
-                $('#ongkirRow').hide();
+                $('#ongkirSection').hide();
             }
             
-            if (data.discountAmount > 0) {
+            // Update totals
+            $('#subtotalBeforeDiscount').text('Rp ' + formatNumber(data.subtotal_before_discount));
+            
+            // Show/hide discount
+            if (data.discount_amount > 0) {
                 $('#discountRow').show();
-                $('#discountAmount').text('-Rp ' + formatNumber(data.discountAmount));
+                $('#customerTierText').text(data.customer_tier);
+                $('#discountAmount').text('-Rp ' + formatNumber(data.discount_amount));
             } else {
                 $('#discountRow').hide();
             }
             
-            $('#tax').text('Rp ' + formatNumber(pajak));
-            $('#grandTotal').text('Rp ' + formatNumber(total));
+            $('#grandTotal').text('Rp ' + formatNumber(data.total));
             
-            breakdown.show();
-            $('#checkoutBtn').prop('disabled', false);
+            // Force show breakdown
+            $('#priceBreakdown').show();
+            
+            // Enable checkout button
+            if (data.total > 0) {
+                $('#checkoutBtn').prop('disabled', false).removeClass('btn-secondary').addClass('btn-success');
+            } else {
+                $('#checkoutBtn').prop('disabled', true).removeClass('btn-success').addClass('btn-secondary');
+            }
+            
+            console.log('=== DISPLAY CALCULATION END ===');
         }
 
         function processCheckout() {
@@ -1088,7 +1264,7 @@
                 Swal.fire({
                     icon: 'warning',
                     title: 'Belum Ada Perhitungan',
-                    text: 'Silakan hitung total terlebih dahulu!'
+                    text: 'Silakan masukkan berat terlebih dahulu!'
                 });
                 return;
             }
@@ -1124,21 +1300,20 @@
                 customerName = 'Tamu';
             }
             
-            const subtotalBeforeDiscount = calculationData.subtotalLaundry + calculationData.hargaOngkir;
-            const subtotalAfterDiscount = subtotalBeforeDiscount - calculationData.discountAmount;
-            const pajak = subtotalAfterDiscount * 0.1;
-            const total = subtotalAfterDiscount + pajak;
+            const subtotalBeforeDiscount = calculationData.subtotal_before_discount;
+            const subtotalAfterDiscount = calculationData.subtotal_after_discount;
+            const total = calculationData.total;
             
             Swal.fire({
                 title: 'Konfirmasi Transaksi',
                 html: `
                     <div class="text-start">
                         <p><strong>Customer:</strong> ${customerName} ${customerPhone ? '(' + customerPhone + ')' : ''}</p>
-                        <p><strong>Layanan:</strong> ${calculationData.layanan}</p>
+                        <p><strong>Layanan:</strong> ${calculationData.tier}</p>
                         <p><strong>Berat:</strong> ${calculationData.berat} kg</p>
+                        <p><strong>Harga/kg:</strong> Rp ${formatNumber(calculationData.harga_per_kg)}</p>
                         <p><strong>Subtotal:</strong> Rp ${formatNumber(subtotalBeforeDiscount)}</p>
-                        ${calculationData.discountAmount > 0 ? `<p><strong>Diskon:</strong> -Rp ${formatNumber(calculationData.discountAmount)}</p>` : ''}
-                        <p><strong>Pajak:</strong> Rp ${formatNumber(pajak)}</p>
+                        ${calculationData.discount_amount > 0 ? `<p><strong>Diskon ${calculationData.customer_tier}:</strong> -Rp ${formatNumber(calculationData.discount_amount)}</p>` : ''}
                         <p><strong>Total:</strong> Rp ${formatNumber(total)}</p>
                         <p><strong>Pembayaran:</strong> ${selectedPaymentMethod.toUpperCase()}</p>
                     </div>
@@ -1157,17 +1332,17 @@
                         nama_customer: customerName,
                         no_hp: customerPhone,
                         total_kilo: calculationData.berat,
-                        id_layanan: $('#layananSelect').val(),
-                        harga_per_kilo: calculationData.hargaPerKilo,
-                        subtotal_laundry: calculationData.subtotalLaundry,
+                        id_layanan: 1,
+                        harga_per_kilo: calculationData.harga_per_kg,
+                        subtotal_laundry: calculationData.subtotal_laundry,
                         is_delivery: $('#deliveryCheck').is(':checked') ? 1 : 0,
-                        id_ongkir: $('#ongkirSelect').val() || null,
-                        harga_ongkir: calculationData.hargaOngkir,
-                        discount_percent: calculationData.discountPercent,
-                        discount_amount: calculationData.discountAmount,
-                        subtotal: subtotalAfterDiscount,
-                        pajak: pajak,
-                        total: total,
+                        id_ongkir: null,
+                        harga_ongkir: calculationData.ongkir,
+                        discount_percent: 0,
+                        discount_amount: calculationData.discount_amount,
+                        subtotal: calculationData.subtotal_after_discount,
+                        pajak: 0,
+                        total: calculationData.total,
                         payment_method: selectedPaymentMethod,
                         catatan: $('#catatanText').val()
                     };
@@ -1234,6 +1409,7 @@
 
         function selectCustomer(customer) {
             selectedCustomer = customer;
+            console.log('selectCustomer called with:', customer);
             
             // Show selected customer info
             $('#selectedCustomerName').text(customer.nama);
@@ -1253,6 +1429,7 @@
             selectedCustomer = null;
             $('#customerSelect').val('');
             $('#selectedCustomerInfo').fadeOut(300);
+
         }
         
         function showAddCustomerModal() {
