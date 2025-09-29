@@ -247,6 +247,16 @@ class HargaModel extends MY_Model
     {
         return $this->db->insert($this->table, $data);
     }
+
+    public function getAllServices()
+    {
+        $this->db->select('mhd.*, mh.judul_harga');
+        $this->db->from('master_harga_details mhd');
+        $this->db->join('master_harga mh', 'mh.id = mhd.master_harga_id', 'left');
+        $this->db->where('mhd.deleted_at IS NULL');
+        $this->db->where('mh.deleted_at IS NULL');
+        return $this->db->get()->result();
+    }
 	public function get_price($id_mitra, $brand, $model, $ram, $storage, $tanggal_sekarang)
     {
         $this->db->select('

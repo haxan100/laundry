@@ -51,4 +51,9 @@ class AdminModel extends CI_Model
     {
         return $this->db->where('id_admin', $id)->delete($this->table);
     }
+
+    public function findAdmin($username)
+    {
+        return $this->db->get_where($this->table, ['username' => $username])->row();
+    }
 }
