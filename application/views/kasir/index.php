@@ -1499,12 +1499,16 @@
                                     icon: 'success',
                                     title: 'Transaksi Berhasil!',
                                     text: response.message,
-                                    timer: 2000,
-                                    showConfirmButton: false
+                                    showConfirmButton: true,
+                                    confirmButtonText: 'Print Receipt',
+                                    showCancelButton: true,
+                                    cancelButtonText: 'Tutup'
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.open('<?= base_url("receipt/print_receipt/") ?>' + response.transaction_id, '_blank', 'width=400,height=600');
+                                    }
+                                    resetForm();
                                 });
-                                
-                                // Reset form
-                                resetForm();
                             } else {
                                 Swal.fire({
                                     icon: 'error',
