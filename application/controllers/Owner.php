@@ -436,6 +436,14 @@ class Owner extends MY_Controller
         $this->load->view('owner/setting_discount', $obj);
     }
 
+    public function setting_harga()
+    {
+        $obj['ci'] = $this;
+        $obj['page'] = 'setting_harga';
+        $obj['pageTitle'] = 'Setting Harga';
+        $this->load->view('owner/setting_harga', $obj);
+    }
+
     public function update_tier_discounts()
     {
         $discounts = $this->input->post('discounts');

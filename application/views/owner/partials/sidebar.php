@@ -49,6 +49,13 @@
                         <span>Setting Diskon Tier</span>
                     </a>
                 </li>
+
+                <li class="<?= ($this->uri->segment(2) == 'setting_harga') ? 'mm-active' : '' ?>">
+                    <a href="<?= base_url('owner/setting_harga') ?>" class="waves-effect">
+                        <i class="mdi mdi-currency-usd"></i>
+                        <span>Setting Harga</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
