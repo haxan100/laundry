@@ -215,25 +215,15 @@ class Kasir extends MY_Controller
     {
         $data = [
             'customer_type' => $this->input->post('customer_type'),
-            'id_customer' => $this->input->post('customer_id'),
+            'id_customer' => $this->input->post('customer_id') ?: null,
             'nama_customer' => $this->input->post('nama_customer'),
             'no_hp' => $this->input->post('no_hp'),
-            'total_kilo' => $this->input->post('total_kilo'),
-            'id_layanan' => $this->input->post('id_layanan'),
-            'harga_per_kilo' => $this->input->post('harga_per_kilo'),
-            'subtotal_laundry' => $this->input->post('subtotal_laundry'),
-            'is_delivery' => $this->input->post('is_delivery'),
-            'id_ongkir' => $this->input->post('id_ongkir'),
-            'harga_ongkir' => $this->input->post('harga_ongkir'),
-            'discount_percent' => $this->input->post('discount_percent'),
-            'discount_amount' => $this->input->post('discount_amount'),
-            'subtotal' => $this->input->post('subtotal'),
-            'pajak' => $this->input->post('pajak'),
+            'subtotal' => $this->input->post('total'),
+            'pajak' => 0,
             'total' => $this->input->post('total'),
             'payment_method' => $this->input->post('payment_method'),
-            'catatan' => $this->input->post('catatan'),
-            'id_kasir' => $this->session->userdata('user_id'),
-            'status' => 'pending'
+            'status' => 'pending',
+            'id_kasir' => $this->session->userdata('user_id')
         ];
 
         $transaction_id = $this->TransaksiModel->createTransaction($data);
