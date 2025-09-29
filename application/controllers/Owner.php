@@ -438,10 +438,134 @@ class Owner extends MY_Controller
 
     public function setting_harga()
     {
+        $this->load->model('Setting_harga_model');
         $obj['ci'] = $this;
         $obj['page'] = 'setting_harga';
         $obj['pageTitle'] = 'Setting Harga';
+        $obj['laundry_services'] = $this->Setting_harga_model->get_all_laundry();
+        $obj['ongkir_rates'] = $this->Setting_harga_model->get_all_ongkir();
+        $obj['stats'] = $this->Setting_harga_model->get_stats();
         $this->load->view('owner/setting_harga', $obj);
+    }
+
+    // Laundry Service CRUD
+    public function add_laundry_service()
+    {
+        $this->load->model('Setting_harga_model');
+        $data = [
+            'nama_tier' => $this->input->post('nama_tier'),
+            'harga_per_kg' => $this->input->post('harga_per_kg'),
+            'min_kg' => $this->input->post('min_kg'),
+            'status' => 'aktif'
+        ];
+        
+        if ($this->Setting_harga_model->insert_laundry($data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Layanan berhasil ditambahkan']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan layanan']);
+        }
+    }
+
+    public function get_laundry_service()
+    {
+        $this->load->model('Setting_harga_model');
+        $id = $this->input->post('id');
+        $service = $this->Setting_harga_model->get_laundry_by_id($id);
+        if ($service) {
+            echo json_encode(['status' => 'success', 'data' => $service]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Layanan tidak ditemukan']);
+        }
+    }
+
+    public function update_laundry_service()
+    {
+        $this->load->model('Setting_harga_model');
+        $id = $this->input->post('id');
+        $data = [
+            'nama_tier' => $this->input->post('nama_tier'),
+            'harga_per_kg' => $this->input->post('harga_per_kg'),
+            'min_kg' => $this->input->post('min_kg'),
+            'status' => $this->input->post('status')
+        ];
+        
+        if ($this->Setting_harga_model->update_laundry($id, $data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Layanan berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate layanan']);
+        }
+    }
+
+    public function delete_laundry_service()
+    {
+        $this->load->model('Setting_harga_model');
+        $id = $this->input->post('id');
+        
+        if ($this->Setting_harga_model->delete_laundry($id)) {
+            echo json_encode(['status' => 'success', 'message' => 'Layanan berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus layanan']);
+        }
+    }
+
+    // Delivery Rate CRUD
+    public function add_ongkir_rate()
+    {
+        $this->load->model('Setting_harga_model');
+        $data = [
+            'nama_tier' => $this->input->post('nama_tier'),
+            'harga_per_km' => $this->input->post('harga_per_km'),
+            'min_km' => $this->input->post('min_km'),
+            'status' => 'aktif'
+        ];
+        
+        if ($this->Setting_harga_model->insert_ongkir($data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Tarif ongkir berhasil ditambahkan']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan tarif ongkir']);
+        }
+    }
+
+    public function get_ongkir_rate()
+    {
+        $this->load->model('Setting_harga_model');
+        $id = $this->input->post('id');
+        $rate = $this->Setting_harga_model->get_ongkir_by_id($id);
+        if ($rate) {
+            echo json_encode(['status' => 'success', 'data' => $rate]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Tarif tidak ditemukan']);
+        }
+    }
+
+    public function update_ongkir_rate()
+    {
+        $this->load->model('Setting_harga_model');
+        $id = $this->input->post('id');
+        $data = [
+            'nama_tier' => $this->input->post('nama_tier'),
+            'harga_per_km' => $this->input->post('harga_per_km'),
+            'min_km' => $this->input->post('min_km'),
+            'status' => $this->input->post('status')
+        ];
+        
+        if ($this->Setting_harga_model->update_ongkir($id, $data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Tarif ongkir berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate tarif ongkir']);
+        }
+    }
+
+    public function delete_ongkir_rate()
+    {
+        $this->load->model('Setting_harga_model');
+        $id = $this->input->post('id');
+        
+        if ($this->Setting_harga_model->delete_ongkir($id)) {
+            echo json_encode(['status' => 'success', 'message' => 'Tarif ongkir berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus tarif ongkir']);
+        }
     }
 
     public function update_tier_discounts()
