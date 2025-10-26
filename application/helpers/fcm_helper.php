@@ -21,7 +21,7 @@ if (!function_exists('generate_firebase_token')) {
 if (!function_exists('send_fcm_notification')) {
     function send_fcm_notification($accessToken, $to, $title, $body, $data = [])
     {
-        $url = 'https://fcm.googleapis.com/v1/projects/plusminus-3d9e5/messages:send';
+        $url = 'https://fcm.googleapis.com/v1/projects/Admin-3d9e5/messages:send';
 
         $message = [
             "message" => [

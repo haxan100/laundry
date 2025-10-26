@@ -104,7 +104,7 @@
     <div class="login-container">
         <div class="icon"></div>
         <h2>Selamat Datang</h2>
-        <p>Silahkan login di <strong>Plus Minus Indonesia</strong></p>
+        <p>Silahkan login di <strong>Admin Indonesia</strong></p>
         <div class="input-container">
             <input type="text" id="username" placeholder="Username">
         </div>

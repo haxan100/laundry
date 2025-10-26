@@ -148,6 +148,31 @@
                 }
             });
         }
+
+        // Load dashboard stats if on dashboard page
+        if (window.location.pathname.includes('/owner') && !window.location.pathname.includes('/owner/')) {
+            loadDashboardStats();
+        }
+
+        function loadDashboardStats() {
+            $.ajax({
+                url: '<?= base_url("owner/get_dashboard_stats") ?>',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        $('#ordersThisMonth').text(response.data.totalOrdersThisMonth);
+                        $('#totalCustomers').text(response.data.totalCustomers);
+                        $('#pendingOrders').text(response.data.pendingOrders);
+                    }
+                },
+                error: function() {
+                    $('#ordersThisMonth').text('Error');
+                    $('#totalCustomers').text('Error');
+                    $('#pendingOrders').text('Error');
+                }
+            });
+        }
     </script>
 </body>
 </html>

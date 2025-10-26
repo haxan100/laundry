@@ -37,7 +37,11 @@ class Dashboard extends MY_Controller
 
         if ($role === 'owner') {
             $user = $this->OwnerModel->findOwner($username);
-            // var_dump($user);die;
+            // var_dump($user);
+            // var_dump(md5($password));
+            // var_dump($user->password);
+            // var_dump(md5($password) === $user->password);
+            // die;
             if ($user && md5($password) === $user->password) {
                 $this->session->set_userdata([
                     'user_id' => $user->id_owner,

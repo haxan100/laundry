@@ -270,7 +270,7 @@
 		$obj['ci'] = $ci;
 		$obj['header'] = array(
 
-			'title' => isset($pageTitle) ? $pageTitle : 'Plus Minus',
+			'title' => isset($pageTitle) ? $pageTitle : 'Admin',
 			'page' => isset($page) ? $page : 'index',
 		);
 		$ci->load->view('Admin/Sidebar', $obj);

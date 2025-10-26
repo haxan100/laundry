@@ -212,9 +212,9 @@ $bu = base_url();
 	// Konfigurasi Firebase
 	const firebaseConfig = {
 		apiKey: "AIzaSyBYX7Je9BK3QzDxmaFbh-jKzzIAw7h0SXs",
-		authDomain: "plusminus-3d9e5.firebaseapp.com",
-		projectId: "plusminus-3d9e5",
-		storageBucket: "plusminus-3d9e5.firebasestorage.app",
+		authDomain: "Admin-3d9e5.firebaseapp.com",
+		projectId: "Admin-3d9e5",
+		storageBucket: "Admin-3d9e5.firebasestorage.app",
 		messagingSenderId: "773329432786",
 		appId: "1:773329432786:web:3a272843f87fd78828fd0b",
 		measurementId: "G-D2F4WHSCMT"

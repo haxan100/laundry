@@ -13,34 +13,26 @@
 
                     <!-- Stats Cards -->
                     <div class="row mb-4">
-                        <div class="col-xl-3 col-md-6 mb-3">
-                            <div class="stats-card">
-                                <i class="fas fa-dollar-sign" style="font-size: 3em; margin-bottom: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                <div class="stats-number">Rp 2.5M</div>
-                                <p style="color: #718096; font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Total Revenue</p>
-                            </div>
-                        </div>
-                        
-                        <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="col-xl-4 col-md-6 mb-3">
                             <div class="stats-card">
                                 <i class="fas fa-shopping-cart" style="font-size: 3em; margin-bottom: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                <div class="stats-number">156</div>
-                                <p style="color: #718096; font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Orders Today</p>
+                                <div class="stats-number" id="ordersThisMonth">-</div>
+                                <p style="color: #718096; font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Orders This Month</p>
                             </div>
                         </div>
                         
-                        <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="col-xl-4 col-md-6 mb-3">
                             <div class="stats-card">
-                                <i class="fas fa-users" style="font-size: 3em; margin-bottom: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                <div class="stats-number">1,234</div>
+                                <i class="fas fa-users" style="font-size: 3em; margin-bottom: 15px; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                                <div class="stats-number" id="totalCustomers">-</div>
                                 <p style="color: #718096; font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Total Customers</p>
                             </div>
                         </div>
                         
-                        <div class="col-xl-3 col-md-6 mb-3">
+                        <div class="col-xl-4 col-md-6 mb-3">
                             <div class="stats-card">
-                                <i class="fas fa-clock" style="font-size: 3em; margin-bottom: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
-                                <div class="stats-number">23</div>
+                                <i class="fas fa-clock" style="font-size: 3em; margin-bottom: 15px; background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>
+                                <div class="stats-number" id="pendingOrders">-</div>
                                 <p style="color: #718096; font-size: 1rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;">Pending Orders</p>
                             </div>
                         </div>

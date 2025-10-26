@@ -12,13 +12,17 @@ class Admin extends MY_Controller
 		$this->load->model('HargaModel','harga');
 		$this->load->model('TokoModel');
 		$this->load->model('SettingModel');
+		$this->load->model('DashboardModel');
 	}
 	public function index()
 	{
 		check_login();
 		$obj['ci'] = $this;
-		$obj['page'] = 'dashboard'; // Set halaman aktif
+		$obj['page'] = 'dashboard';
 		$obj['pageTitle'] = 'Dashboard';
+		$obj['totalCustomers'] = $this->DashboardModel->getTotalCustomers();
+		$obj['totalOrdersThisMonth'] = $this->DashboardModel->getTotalOrdersThisMonth();
+		$obj['pendingOrders'] = $this->DashboardModel->getPendingOrders();
 		$this->load->view('Admin/Index', $obj);
 	}
 	public function master_role()

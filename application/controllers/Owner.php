@@ -11,6 +11,7 @@ class Owner extends MY_Controller
         $this->load->model('AdminModel');
         $this->load->model('CustomerModel');
         $this->load->model('TierDiscountModel');
+        $this->load->model('DashboardModel');
         $this->load->library('encryption');
         $this->check_owner_login();
     }
@@ -600,6 +601,17 @@ class Owner extends MY_Controller
     public function get_tier_discount($tier_level)
     {
         return $this->TierDiscountModel->getDiscountAmount($tier_level);
+    }
+
+    public function get_dashboard_stats()
+    {
+        $data = [
+            'totalCustomers' => $this->DashboardModel->getTotalCustomers(),
+            'totalOrdersThisMonth' => $this->DashboardModel->getTotalOrdersThisMonth(),
+            'pendingOrders' => $this->DashboardModel->getPendingOrders()
+        ];
+        
+        echo json_encode(['status' => 'success', 'data' => $data]);
     }
 
     public function logout()
