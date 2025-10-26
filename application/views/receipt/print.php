@@ -139,6 +139,12 @@
                 <span><?= $transaction->no_hp ?></span>
             </div>
             <?php endif; ?>
+            <?php if (!empty($transaction->catatan)): ?>
+            <div class="info-row">
+                <span>Catatan:</span>
+                <span><?= $transaction->catatan ?></span>
+            </div>
+            <?php endif; ?>
         </div>
         
         <div class="items">

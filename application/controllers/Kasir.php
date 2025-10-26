@@ -225,6 +225,7 @@ class Kasir extends MY_Controller
             'pajak' => 0,
             'total' => $this->input->post('total'),
             'payment_method' => $this->input->post('payment_method'),
+            'catatan' => $this->input->post('catatan'),
             'status' => 'pending',
             'id_kasir' => $this->session->userdata('user_id')
         ];
