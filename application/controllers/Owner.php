@@ -13,6 +13,7 @@ class Owner extends MY_Controller
         $this->load->model('TierDiscountModel');
         $this->load->model('DashboardModel');
         $this->load->library('encryption');
+        $this->load->helper('transaksi');
         $this->check_owner_login();
     }
 
@@ -612,6 +613,51 @@ class Owner extends MY_Controller
         ];
         
         echo json_encode(['status' => 'success', 'data' => $data]);
+    }
+
+    public function master_transaksi()
+    {
+        $obj['ci'] = $this;
+        $obj['page'] = 'master_transaksi';
+        $obj['pageTitle'] = 'Master Transaksi';
+        $obj['start_date'] = date('Y-m-01'); // First day of current month
+        $obj['end_date'] = date('Y-m-d'); // Today
+        $this->load->view('owner/master_transaksi', $obj);
+    }
+
+    public function get_transaksi_ajax()
+    {
+        $start_date = $this->input->post('start_date') ?: date('Y-m-01');
+        $end_date = $this->input->post('end_date') ?: date('Y-m-d');
+        
+        $this->db->select('t.*, c.nama as customer_nama, c.tier_level as customer_tier, a.nama_lengkap as kasir_nama');
+        $this->db->from('transaksi t');
+        $this->db->join('customers c', 't.id_customer = c.id_customer', 'left');
+        $this->db->join('admin a', 't.id_kasir = a.id_admin', 'left');
+        $this->db->where('DATE(t.created_at) >=', $start_date);
+        $this->db->where('DATE(t.created_at) <=', $end_date);
+        $this->db->order_by('t.created_at', 'DESC');
+        $transaksi = $this->db->get()->result();
+        
+        echo json_encode($transaksi);
+    }
+
+    public function get_transaksi_detail()
+    {
+        $id = $this->input->post('id');
+        
+        $this->db->select('t.*, c.nama as customer_nama, c.tier_level as customer_tier, a.nama_lengkap as kasir_nama');
+        $this->db->from('transaksi t');
+        $this->db->join('customers c', 't.id_customer = c.id_customer', 'left');
+        $this->db->join('admin a', 't.id_kasir = a.id_admin', 'left');
+        $this->db->where('t.id_transaksi', $id);
+        $transaksi = $this->db->get()->row();
+        
+        if ($transaksi) {
+            echo json_encode(['status' => 'success', 'data' => $transaksi]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Transaksi tidak ditemukan']);
+        }
     }
 
     public function logout()

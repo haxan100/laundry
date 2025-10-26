@@ -15,8 +15,19 @@ class TransaksiModel extends CI_Model
     
     public function getTodayTransactions($kasir_id)
     {
+        $this->db->select('*');
         $this->db->where('id_kasir', $kasir_id);
         $this->db->where('DATE(created_at)', date('Y-m-d'));
+        $this->db->order_by('created_at', 'DESC');
+        return $this->db->get($this->table)->result();
+    }
+    
+    public function getTransactionsByDateRange($kasir_id, $start_date, $end_date)
+    {
+        $this->db->select('*');
+        $this->db->where('id_kasir', $kasir_id);
+        $this->db->where('DATE(created_at) >=', $start_date);
+        $this->db->where('DATE(created_at) <=', $end_date);
         $this->db->order_by('created_at', 'DESC');
         return $this->db->get($this->table)->result();
     }

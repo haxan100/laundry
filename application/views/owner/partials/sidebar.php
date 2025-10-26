@@ -41,6 +41,13 @@
                     </a>
                 </li>
 
+                <li class="<?= ($this->uri->segment(2) == 'master_transaksi') ? 'mm-active' : '' ?>">
+                    <a href="<?= base_url('owner/master_transaksi') ?>" class="waves-effect">
+                        <i class="mdi mdi-receipt"></i>
+                        <span>Master Transaksi</span>
+                    </a>
+                </li>
+
                 <li class="menu-title">Settings</li>
 
                 <li class="<?= ($this->uri->segment(2) == 'setting_discount') ? 'mm-active' : '' ?>">

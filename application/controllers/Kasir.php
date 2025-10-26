@@ -29,9 +29,14 @@ class Kasir extends MY_Controller
     
     public function transactions()
     {
+        $start_date = $this->input->get('start_date') ?: date('Y-m-d');
+        $end_date = $this->input->get('end_date') ?: date('Y-m-d');
+        
         $data['title'] = 'Daftar Transaksi - ' . $this->config->item('title');
         $data['user'] = $this->AdminModel->getById($this->session->userdata('user_id'));
-        $data['transactions'] = $this->TransaksiModel->getTodayTransactions($this->session->userdata('user_id'));
+        $data['transactions'] = $this->TransaksiModel->getTransactionsByDateRange($this->session->userdata('user_id'), $start_date, $end_date);
+        $data['start_date'] = $start_date;
+        $data['end_date'] = $end_date;
         $this->load->view('kasir/transactions', $data);
     }
 
@@ -182,6 +187,25 @@ class Kasir extends MY_Controller
         $subtotal_after_discount = $subtotal_before_discount - $discount_amount;
         $total = $subtotal_after_discount;
         
+        // Get ongkir price per km for saving
+        $harga_per_km = 0;
+        $tier_ongkir_name = '';
+        if ($is_delivery && $jarak_km >= 0.5) {
+            $this->db->where('status', 'aktif');
+            $this->db->where('min_km <=', $jarak_km);
+            $this->db->order_by('min_km', 'DESC');
+            $this->db->limit(1);
+            $ongkir_data = $this->db->get('setting_harga_ongkir')->row();
+            
+            if ($ongkir_data) {
+                $harga_per_km = $ongkir_data->harga_per_km;
+                $tier_ongkir_name = $ongkir_data->nama_tier;
+            } else {
+                $harga_per_km = 2000;
+                $tier_ongkir_name = 'Default Tier';
+            }
+        }
+        
         echo json_encode([
             'status' => 'success',
             'data' => [
@@ -192,6 +216,8 @@ class Kasir extends MY_Controller
                 'jarak_km' => $jarak_km,
                 'ongkir' => $ongkir,
                 'ongkir_tier' => $ongkir_tier,
+                'harga_per_km' => $harga_per_km,
+                'tier_ongkir_name' => $tier_ongkir_name,
                 'discount_amount' => $discount_amount,
                 'customer_tier' => $customer_tier,
                 'subtotal_before_discount' => $subtotal_before_discount,
@@ -216,6 +242,13 @@ class Kasir extends MY_Controller
 
     public function create_order()
     {
+        $berat = (float) $this->input->post('berat');
+        $jarak_km = (float) $this->input->post('jarak_km');
+        $harga_per_kg = (float) $this->input->post('harga_per_kg');
+        $harga_per_km = (float) $this->input->post('harga_per_km');
+        $tier_laundry = $this->input->post('tier_laundry');
+        $tier_ongkir = $this->input->post('tier_ongkir');
+        
         $data = [
             'customer_type' => $this->input->post('customer_type'),
             'id_customer' => $this->input->post('customer_id') ?: null,
@@ -226,6 +259,12 @@ class Kasir extends MY_Controller
             'total' => $this->input->post('total'),
             'payment_method' => $this->input->post('payment_method'),
             'catatan' => $this->input->post('catatan'),
+            'berat_kg' => $berat,
+            'jarak_km' => $jarak_km > 0 ? $jarak_km : null,
+            'harga_per_kg' => $harga_per_kg,
+            'harga_per_km' => $harga_per_km > 0 ? $harga_per_km : null,
+            'tier_laundry' => $tier_laundry,
+            'tier_ongkir' => $tier_ongkir ?: null,
             'status' => 'pending',
             'id_kasir' => $this->session->userdata('user_id')
         ];

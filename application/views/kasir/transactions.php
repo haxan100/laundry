@@ -19,6 +19,27 @@
                         </a>
                     </div>
                     <div class="card-body">
+                        <!-- Date Filter -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <form method="GET" class="row g-3 align-items-end">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Tanggal Mulai</label>
+                                        <input type="date" class="form-control" name="start_date" value="<?= $start_date ?>">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Tanggal Akhir</label>
+                                        <input type="date" class="form-control" name="end_date" value="<?= $end_date ?>">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-primary">Filter</button>
+                                        <a href="<?= base_url('kasir/transactions') ?>" class="btn btn-secondary">Reset</a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <hr>
+                        
                         <?php if (empty($transactions)): ?>
                             <div class="text-center py-5">
                                 <i class="fas fa-receipt fa-3x text-muted mb-3"></i>
@@ -34,7 +55,7 @@
                                             <th>Berat (kg)</th>
                                             <th>Total</th>
                                             <th>Status</th>
-                                            <th>Waktu</th>
+                                            <th>Waktu & Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -51,7 +72,7 @@
                                                         <span class="badge bg-secondary">Tamu</span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td><?= number_format($trx->total_kilo, 1) ?> kg</td>
+                                                <td><?= number_format($trx->berat_kg ?? 0, 1) ?> kg</td>
                                                 <td><strong>Rp <?= number_format($trx->total, 0, ',', '.') ?></strong></td>
                                                 <td>
                                                     <?php
@@ -66,7 +87,13 @@
                                                         <?= ucfirst($trx->status) ?>
                                                     </span>
                                                 </td>
-                                                <td><?= date('H:i', strtotime($trx->created_at)) ?></td>
+                                                <td>
+                                                    <?= date('H:i', strtotime($trx->created_at)) ?>
+                                                    <br>
+                                                    <a href="<?= base_url('receipt/print_receipt/' . $trx->id_transaksi) ?>" target="_blank" class="btn btn-sm btn-outline-primary mt-1">
+                                                        <i class="fas fa-print"></i> Print
+                                                    </a>
+                                                </td>
                                             </tr>
                                         <?php endforeach; ?>
                                     </tbody>
@@ -76,7 +103,10 @@
                             <div class="mt-3">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <p class="text-muted">Total: <?= count($transactions) ?> transaksi</p>
+                                        <p class="text-muted">
+                                            Periode: <?= date('d/m/Y', strtotime($start_date)) ?> - <?= date('d/m/Y', strtotime($end_date)) ?><br>
+                                            Total: <?= count($transactions) ?> transaksi
+                                        </p>
                                     </div>
                                     <div class="col-md-6 text-end">
                                         <strong>Total Pendapatan: Rp <?= number_format(array_sum(array_column($transactions, 'total')), 0, ',', '.') ?></strong>

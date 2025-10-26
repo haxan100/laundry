@@ -139,6 +139,18 @@
                 <span><?= $transaction->no_hp ?></span>
             </div>
             <?php endif; ?>
+            <?php if ($transaction->berat_kg): ?>
+            <div class="info-row">
+                <span>Berat:</span>
+                <span><?= $transaction->berat_kg ?> kg</span>
+            </div>
+            <?php endif; ?>
+            <?php if ($transaction->jarak_km): ?>
+            <div class="info-row">
+                <span>Jarak:</span>
+                <span><?= $transaction->jarak_km ?> km</span>
+            </div>
+            <?php endif; ?>
             <?php if (!empty($transaction->catatan)): ?>
             <div class="info-row">
                 <span>Catatan:</span>
@@ -148,10 +160,22 @@
         </div>
         
         <div class="items">
+            <?php if ($transaction->tier_laundry): ?>
             <div class="item-row">
-                <span>Layanan Laundry</span>
-                <span>Rp <?= number_format($transaction->subtotal, 0, ',', '.') ?></span>
+                <span><?= $transaction->tier_laundry ?></span>
+                <span></span>
             </div>
+            <?php endif; ?>
+            <div class="item-row">
+                <span><?= $transaction->berat_kg ? $transaction->berat_kg . ' kg x Rp ' . number_format($transaction->harga_per_kg, 0, ',', '.') : 'Layanan Laundry' ?></span>
+                <span>Rp <?= number_format($transaction->berat_kg * $transaction->harga_per_kg, 0, ',', '.') ?></span>
+            </div>
+            <?php if ($transaction->jarak_km && $transaction->harga_per_km): ?>
+            <div class="item-row">
+                <span><?= $transaction->jarak_km ?> km x Rp <?= number_format($transaction->harga_per_km, 0, ',', '.') ?></span>
+                <span>Rp <?= number_format($transaction->jarak_km * $transaction->harga_per_km, 0, ',', '.') ?></span>
+            </div>
+            <?php endif; ?>
         </div>
         
         <div class="total-section">
