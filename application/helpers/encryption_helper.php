@@ -53,7 +53,7 @@ if (!function_exists('check_access')) {
 
         // Ambil detail role dari database (misal RoleModel)
         $CI->load->model('RoleModel');
-        $role_data = $CI->RoleModel->findById("role",$user_role);
+        $role_data = $CI->RoleModel->findById("roles",$user_role);
 
         // Jika role tidak ditemukan, redirect ke halaman index
         if (!$role_data) {
@@ -78,7 +78,7 @@ if (!function_exists('check_access_sidebar')) {
 
         // Ambil detail role dari database (misal RoleModel)
         $CI->load->model('RoleModel');
-        $role_data = $CI->RoleModel->findById("role",$user_role);
+        $role_data = $CI->RoleModel->findById("roles",$user_role);
 
         // Jika role tidak ditemukan, kembalikan false
         if (!$role_data) return false;
