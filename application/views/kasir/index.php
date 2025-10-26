@@ -1361,11 +1361,11 @@
             `);
             
             // Show/hide delivery section
-            if (data.ongkir > 0) {
+            if ($('#deliveryCheck').is(':checked') && data.jarak_km > 0) {
                 $('#ongkirSection').show();
                 $('#jarakDetail').text(data.jarak_km + ' km');
-                const rateMatch = data.ongkir_tier.match(/Rp ([\d\.]+)/);
-                const rate = rateMatch ? rateMatch[1] : '0';
+                const rateMatch = data.ongkir_tier.match(/Rp ([\d\.,]+)/);
+                const rate = rateMatch ? rateMatch[1] : '2.000';
                 $('#tarifOngkirDetail').text('Rp ' + rate);
                 $('#ongkirAmount').text('Rp ' + formatNumber(data.ongkir));
                 $('#ongkirTierInfo').text(data.ongkir_tier);
@@ -1770,7 +1770,7 @@
             if (prices && prices.length > 0) {
                 html = '<ul class="mb-0">';
                 prices.forEach(price => {
-                    html += `<li>${price.nama_layanan}: <strong>Rp ${formatNumber(price.harga_per_kilo)}/kg</strong></li>`;
+                    html += `<li>${price.nama_tier}: <strong>Rp ${formatNumber(price.harga_per_kg)}/kg</strong> (Min ${price.min_kg}kg)</li>`;
                 });
                 html += '</ul>';
             } else {
@@ -1786,7 +1786,7 @@
             if (ongkirs && ongkirs.length > 0) {
                 html = '<ul class="mb-0">';
                 ongkirs.forEach(ongkir => {
-                    html += `<li>${ongkir.nama_area}: <strong>Rp ${formatNumber(ongkir.harga_ongkir)}/km</strong></li>`;
+                    html += `<li>${ongkir.nama_tier}: <strong>Rp ${formatNumber(ongkir.harga_per_km)}/km</strong> (Min ${ongkir.min_km}km)</li>`;
                 });
                 html += '</ul>';
             } else {

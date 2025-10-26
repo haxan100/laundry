@@ -203,7 +203,7 @@ class Owner extends MY_Controller
     {
         $data = [
             'username' => $this->input->post('username'),
-            'password' => $this->encrypt_password($this->input->post('password')),
+            'password' => md5($this->input->post('password')),
             'nama_lengkap' => $this->input->post('nama_lengkap'),
             'email' => $this->input->post('email'),
             'telepon' => $this->input->post('telepon'),
@@ -259,7 +259,7 @@ class Owner extends MY_Controller
         // Add password if provided
         $password = $this->input->post('password');
         if (!empty($password)) {
-            $data['password'] = $this->encrypt_password($password);
+            $data['password'] = md5($password);
         }
         
         if ($this->AdminModel->update($id, $data)) {

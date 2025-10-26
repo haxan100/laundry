@@ -58,7 +58,6 @@ class Dashboard extends MY_Controller
             }
         } else {
             $user = $this->AdminModel->findAdmin($username);
-            
             if ($user && md5($password) === $user->password) {
                 $this->session->set_userdata([
                     'user_id' => $user->id_admin,
