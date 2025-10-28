@@ -257,8 +257,6 @@ class Kasir extends MY_Controller
 
     public function create_order()
     {
-        var_dump($this->session->userdata('user_id'));
-        die;
         $berat = (float) $this->input->post('berat');
         $jarak_km = (float) $this->input->post('jarak_km');
         $harga_per_kg = (float) $this->input->post('harga_per_kg');
