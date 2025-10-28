@@ -65,12 +65,18 @@ class Dashboard extends MY_Controller
         } else {
             $user = $this->AdminModel->findAdmin($username);
             if ($user && md5($password) === $user->password) {
+                // Get role permissions
+                $this->load->model('RoleModel');
+                $role = $this->RoleModel->getById($user->id_role);
+                $permissions = $role ? json_decode($role->permissions, true) : [];
+                
                 $this->session->set_userdata([
                     'user_id' => $user->id_admin,
                     'username' => $user->username,
                     'id_role' => $user->id_role,
                     'user_type' => 'admin',
-                    'nama_lengkap' => $user->nama_lengkap
+                    'nama_lengkap' => $user->nama_lengkap,
+                    'permissions' => $permissions
                 ]);
                 
                 // Check if user is cashier (assuming role id 3 is cashier)
@@ -84,7 +90,7 @@ class Dashboard extends MY_Controller
                     echo json_encode([
                         'status' => 'success',
                         'message' => 'Login berhasil!',
-                        'redirect' => base_url() . "admin"
+                        'redirect' => base_url() . "owner"
                     ]);
                 }
                 return;

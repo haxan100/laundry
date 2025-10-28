@@ -38,54 +38,7 @@ if (!function_exists('check_login')) {
     }
 }
 
-if (!function_exists('check_access')) {
-    function check_access($required_role)
-    {
-        $CI = &get_instance();
 
-        // Ambil role user dari session
-        $user_role = $CI->session->userdata('id_role');
-
-        // Jika tidak ada role, redirect ke halaman login
-        if (!$user_role) {
-            redirect('Admin/login');
-        }
-
-        // Ambil detail role dari database (misal RoleModel)
-        $CI->load->model('RoleModel');
-        $role_data = $CI->RoleModel->findById("roles",$user_role);
-
-        // Jika role tidak ditemukan, redirect ke halaman index
-        if (!$role_data) {
-            redirect('admin');
-        }
-
-        // Cek apakah role user memiliki akses ke halaman yang diminta
-        if (!isset($role_data->$required_role) || $role_data->$required_role != 1) {
-            // Jika tidak memiliki akses, redirect ke halaman index
-            redirect('admin');
-        }
-    }
-}
-if (!function_exists('check_access_sidebar')) {
-    function check_access_sidebar($required_role)
-    {
-        $CI = &get_instance();
-
-        // Ambil role user dari session
-        $user_role = $CI->session->userdata('id_role');
-        if (!$user_role) return false;
-
-        // Ambil detail role dari database (misal RoleModel)
-        $CI->load->model('RoleModel');
-        $role_data = $CI->RoleModel->findById("roles",$user_role);
-
-        // Jika role tidak ditemukan, kembalikan false
-        if (!$role_data) return false;
-
-        // Cek apakah role memiliki akses ke menu
-        return isset($role_data->$required_role) && $role_data->$required_role == 1;
-    }
 	function encrypt_password_mitra($password)
 	{
 		$encryption_key = 'haxan_sb_mitra'; // Ganti dengan kunci rahasia Anda
@@ -153,6 +106,3 @@ if (!function_exists('check_access_sidebar')) {
 			}
 		}
 	}
-	
-}
-

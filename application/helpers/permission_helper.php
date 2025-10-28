@@ -32,3 +32,34 @@ if (!function_exists('check_permission')) {
         }
     }
 }
+
+if (!function_exists('check_access_sidebar')) {
+    function check_access_sidebar($permission)
+    {
+        $CI =& get_instance();
+        
+        // Owner always has all permissions
+        if ($CI->session->userdata('user_type') === 'owner') {
+            return true;
+        }
+        
+        // Check admin permissions from session
+        if ($CI->session->userdata('user_type') === 'admin') {
+            $permissions = $CI->session->userdata('permissions');
+            if (is_array($permissions)) {
+                return in_array($permission, $permissions);
+            }
+        }
+        
+        return false;
+    }
+}
+
+if (!function_exists('check_access')) {
+    function check_access($permission)
+    {
+        if (!check_access_sidebar($permission)) {
+            show_error('Access Denied - You do not have permission to access this page', 403);
+        }
+    }
+}

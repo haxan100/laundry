@@ -2,12 +2,12 @@
             <div class="navbar-header">
                 <div class="d-flex">
                     <div class="navbar-brand-box">
-                        <a href="<?= base_url('owner') ?>" class="logo logo-light">
+                        <a href="<?= base_url('admin') ?>" class="logo logo-light">
                             <span class="logo-sm">
-                                <i class="mdi mdi-crown" style="font-size: 22px; color: #fff;"></i>
+                                <i class="mdi mdi-shield-account" style="font-size: 22px; color: #fff;"></i>
                             </span>
                             <span class="logo-lg">
-                                <i class="mdi mdi-crown me-2"></i><?= $this->config->item('title') ?>
+                                <i class="mdi mdi-shield-account me-2"></i><?= $this->config->item('title') ?>
                             </span>
                         </a>
                     </div>
@@ -28,9 +28,9 @@
                                 alt="Header Avatar">
                         </button>
                         <div class="dropdown-menu dropdown-menu-end">
-                            <a class="dropdown-item" href="#"><i class="mdi mdi-account-circle font-size-17 align-middle me-1"></i> <?= ucfirst($this->session->userdata('user_type')) ?> - <?= $this->session->userdata('nama_lengkap') ?: $this->session->userdata('username') ?></a>
+                            <a class="dropdown-item" href="#"><i class="mdi mdi-account-circle font-size-17 align-middle me-1"></i> Admin - <?= $this->session->userdata('nama_lengkap') ?: $this->session->userdata('username') ?></a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item text-danger" href="<?= base_url('owner/logout') ?>"><i class="bx bx-power-off font-size-17 align-middle me-1 text-danger"></i> Logout</a>
+                            <a class="dropdown-item text-danger" href="<?= base_url('admin/logout') ?>"><i class="bx bx-power-off font-size-17 align-middle me-1 text-danger"></i> Logout</a>
                         </div>
                     </div>
                 </div>

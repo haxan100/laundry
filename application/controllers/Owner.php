@@ -19,7 +19,7 @@ class Owner extends MY_Controller
 
     private function check_owner_login()
     {
-        if (!$this->session->userdata('user_id') || $this->session->userdata('user_type') !== 'owner') {
+        if (!$this->session->userdata('user_id') || $this->session->userdata('user_type') === 'kasir') {
             redirect('dashboard');
         }
     }
@@ -34,6 +34,11 @@ class Owner extends MY_Controller
 
     public function master_role()
     {
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_role')) {
+            redirect('admin');
+        }
+        
         $obj['ci'] = $this;
         $obj['page'] = 'master_role';
         $obj['pageTitle'] = 'Master Role';
@@ -53,6 +58,11 @@ class Owner extends MY_Controller
 
     public function master_owner()
     {
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_owner')) {
+            redirect('admin');
+        }
+        
         $obj['ci'] = $this;
         $obj['page'] = 'master_owner';
         $obj['pageTitle'] = 'Master Owner';
@@ -149,6 +159,11 @@ class Owner extends MY_Controller
 
     public function master_admin()
     {
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_admin')) {
+            redirect('admin');
+        }
+        
         $obj['ci'] = $this;
         $obj['page'] = 'master_admin';
         $obj['pageTitle'] = 'Master Admin';
@@ -251,20 +266,13 @@ class Owner extends MY_Controller
         return $this->encryption->encrypt($password);
     }
 
-    public function get_roles_ajax()
-    {
-        $roles = $this->RoleModel->getAll();
-        echo json_encode($roles);
-    }
-
-    public function get_owners_ajax()
-    {
-        $owners = $this->OwnerModel->getAll();
-        echo json_encode($owners);
-    }
-
     public function master_customer()
     {
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_customer')) {
+            redirect('owner');
+        }
+        
         $obj['ci'] = $this;
         $obj['page'] = 'master_customer';
         $obj['pageTitle'] = 'Master Customer';
@@ -272,36 +280,34 @@ class Owner extends MY_Controller
         $this->load->view('owner/master_customer', $obj);
     }
 
+    public function get_customers_ajax()
+    {
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_customer')) {
+            echo json_encode([]);
+            return;
+        }
+        
+        $customers = $this->CustomerModel->getAll();
+        echo json_encode($customers);
+    }
+
     public function add_customer()
     {
-        $telepon = $this->input->post('telepon');
-        
-        // Validate phone format (89xxxxxxxx)
-        if (!preg_match('/^89[0-9]{8,12}$/', $telepon)) {
-            echo json_encode(['status' => 'error', 'message' => 'Format telepon harus 89xxxxxxxx']);
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_customer')) {
+            echo json_encode(['status' => 'error', 'message' => 'Access denied']);
             return;
         }
         
         $data = [
             'nama' => $this->input->post('nama'),
             'email' => $this->input->post('email'),
-            'telepon' => $telepon,
+            'telepon' => $this->input->post('telepon'),
             'password' => md5($this->input->post('password')),
             'tier_level' => $this->input->post('tier_level'),
             'created_at' => date('Y-m-d H:i:s')
         ];
-        
-        // Check if email already exists
-        if (!empty($data['email']) && $this->CustomerModel->findByEmail($data['email'])) {
-            echo json_encode(['status' => 'error', 'message' => 'Email sudah digunakan']);
-            return;
-        }
-        
-        // Check if telepon already exists
-        if ($this->CustomerModel->findByTelepon($data['telepon'])) {
-            echo json_encode(['status' => 'error', 'message' => 'Nomor telepon sudah digunakan']);
-            return;
-        }
         
         if ($this->CustomerModel->insert($data)) {
             echo json_encode(['status' => 'success', 'message' => 'Customer berhasil ditambahkan']);
@@ -312,6 +318,12 @@ class Owner extends MY_Controller
 
     public function get_customer()
     {
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_customer')) {
+            echo json_encode(['status' => 'error', 'message' => 'Access denied']);
+            return;
+        }
+        
         $id = $this->input->post('id');
         $customer = $this->CustomerModel->getById($id);
         if ($customer) {
@@ -323,40 +335,21 @@ class Owner extends MY_Controller
 
     public function update_customer()
     {
-        $id = $this->input->post('id');
-        $telepon = $this->input->post('telepon');
-        
-        // Validate phone format
-        if (!preg_match('/^89[0-9]{8,12}$/', $telepon)) {
-            echo json_encode(['status' => 'error', 'message' => 'Format telepon harus 89xxxxxxxx']);
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_customer')) {
+            echo json_encode(['status' => 'error', 'message' => 'Access denied']);
             return;
         }
         
+        $id = $this->input->post('id');
         $data = [
             'nama' => $this->input->post('nama'),
             'email' => $this->input->post('email'),
-            'telepon' => $telepon,
+            'telepon' => $this->input->post('telepon'),
             'tier_level' => $this->input->post('tier_level'),
             'updated_at' => date('Y-m-d H:i:s')
         ];
         
-        // Check if email already exists (exclude current record)
-        if (!empty($data['email'])) {
-            $existing = $this->CustomerModel->findByEmail($data['email']);
-            if ($existing && $existing->id_customer != $id) {
-                echo json_encode(['status' => 'error', 'message' => 'Email sudah digunakan']);
-                return;
-            }
-        }
-        
-        // Check if telepon already exists (exclude current record)
-        $existing = $this->CustomerModel->findByTelepon($data['telepon']);
-        if ($existing && $existing->id_customer != $id) {
-            echo json_encode(['status' => 'error', 'message' => 'Nomor telepon sudah digunakan']);
-            return;
-        }
-        
-        // Add password if provided
         $password = $this->input->post('password');
         if (!empty($password)) {
             $data['password'] = md5($password);
@@ -371,8 +364,13 @@ class Owner extends MY_Controller
 
     public function delete_customer()
     {
-        $id = $this->input->post('id');
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_customer')) {
+            echo json_encode(['status' => 'error', 'message' => 'Access denied']);
+            return;
+        }
         
+        $id = $this->input->post('id');
         if ($this->CustomerModel->delete($id)) {
             echo json_encode(['status' => 'success', 'message' => 'Customer berhasil dihapus']);
         } else {
@@ -380,11 +378,23 @@ class Owner extends MY_Controller
         }
     }
 
-    public function get_customers_ajax()
+    public function get_roles_ajax()
     {
-        $customers = $this->CustomerModel->getAll();
-        echo json_encode($customers);
+        $roles = $this->RoleModel->getAll();
+        echo json_encode($roles);
     }
+
+    public function get_owners_ajax()
+    {
+        $owners = $this->OwnerModel->getAll();
+        echo json_encode($owners);
+    }
+
+
+
+
+  
+
 
     public function setting_discount()
     {
@@ -574,6 +584,11 @@ class Owner extends MY_Controller
 
     public function master_transaksi()
     {
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_transaksi')) {
+            redirect('admin');
+        }
+        
         $obj['ci'] = $this;
         $obj['page'] = 'master_transaksi';
         $obj['pageTitle'] = 'Master Transaksi';
@@ -665,6 +680,11 @@ class Owner extends MY_Controller
 
     public function master_kasir()
     {
+        $this->load->helper('permission');
+        if ($this->session->userdata('user_type') === 'admin' && !check_access_sidebar('master_kasir')) {
+            redirect('admin');
+        }
+        
         $obj['ci'] = $this;
         $obj['page'] = 'master_kasir';
         $obj['pageTitle'] = 'Master Kasir';
@@ -749,6 +769,7 @@ class Owner extends MY_Controller
 
     public function logout()
     {
+        $this->session->unset_userdata(['user_id', 'username', 'user_type', 'nama_lengkap', 'id_role', 'permissions']);
         $this->session->sess_destroy();
         redirect('dashboard');
     }
