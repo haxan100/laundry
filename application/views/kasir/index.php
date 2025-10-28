@@ -852,7 +852,7 @@
                     <button class="theme-toggle" id="themeToggle">
                         <i class="fas fa-moon" id="themeIcon"></i>
                     </button>
-                    <span><i class="fas fa-user me-2"></i><?= $user->nama_lengkap ?? $user->username ?></span>
+                    <span><i class="fas fa-user me-2"></i>Kasir - <?= $user->nama_lengkap ?? $user->username ?></span>
                     <a href="<?= base_url('kasir/logout') ?>" class="logout-btn">
                         <i class="fas fa-sign-out-alt me-2"></i>Logout
                     </a>

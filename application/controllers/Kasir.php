@@ -13,8 +13,11 @@ class Kasir extends MY_Controller
         $this->load->helper('encryption');
         check_login();
         
-        // Check if user is cashier
-        if ($this->session->userdata('id_role') != 3) {
+        // Check if user is cashier (either admin with role 3 or kasir user type)
+        $user_type = $this->session->userdata('user_type');
+        $id_role = $this->session->userdata('id_role');
+        
+        if ($user_type !== 'kasir' && $id_role != 3) {
             redirect('dashboard');
         }
     }
@@ -22,7 +25,13 @@ class Kasir extends MY_Controller
     public function index()
     {
         $data['title'] = 'POS Kasir - ' . $this->config->item('title');
-        $data['user'] = $this->AdminModel->getById($this->session->userdata('user_id'));
+        
+        // Create user object from session data
+        $data['user'] = (object) [
+            'nama_lengkap' => $this->session->userdata('nama_lengkap'),
+            'username' => $this->session->userdata('username')
+        ];
+        
         $data['today_transactions'] = $this->TransaksiModel->getTodayTransactionCount($this->session->userdata('user_id'));
         $this->load->view('kasir/index', $data);
     }
@@ -33,7 +42,13 @@ class Kasir extends MY_Controller
         $end_date = $this->input->get('end_date') ?: date('Y-m-d');
         
         $data['title'] = 'Daftar Transaksi - ' . $this->config->item('title');
-        $data['user'] = $this->AdminModel->getById($this->session->userdata('user_id'));
+        
+        // Create user object from session data
+        $data['user'] = (object) [
+            'nama_lengkap' => $this->session->userdata('nama_lengkap'),
+            'username' => $this->session->userdata('username')
+        ];
+        
         $data['transactions'] = $this->TransaksiModel->getTransactionsByDateRange($this->session->userdata('user_id'), $start_date, $end_date);
         $data['start_date'] = $start_date;
         $data['end_date'] = $end_date;

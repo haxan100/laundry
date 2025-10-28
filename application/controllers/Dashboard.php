@@ -29,6 +29,12 @@ class Dashboard extends MY_Controller
         $this->load->view('dashboard/login_admin', $data);
     }
 
+    public function login_kasir()
+    {
+        $data['title'] = $this->config->item('title');
+        $this->load->view('dashboard/login_kasir', $data);
+    }
+
     public function process_login()
     {
         $username = $this->input->post('username');
@@ -89,5 +95,35 @@ class Dashboard extends MY_Controller
             'status' => 'error',
             'message' => 'Username atau password salah!'
         ]);
+    }
+
+    public function process_kasir_login()
+    {
+        $username = $this->input->post('username');
+        $password = $this->input->post('password');
+        
+        $this->load->model('KasirModel');
+        $kasir = $this->KasirModel->findByUsername($username);
+        
+        if ($kasir && md5($password) === $kasir->password && $kasir->status === 'aktif') {
+            $this->session->set_userdata([
+                'user_id' => $kasir->id_kasir,
+                'username' => $kasir->username,
+                'id_role' => 3, // Kasir role
+                'user_type' => 'kasir',
+                'nama_lengkap' => $kasir->nama_lengkap
+            ]);
+            
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Login berhasil!',
+                'redirect' => base_url() . "kasir"
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Username atau password salah, atau akun tidak aktif!'
+            ]);
+        }
     }
 }

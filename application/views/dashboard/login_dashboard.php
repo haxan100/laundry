@@ -143,6 +143,14 @@
                 <div class="role-title">Admin</div>
                 <div class="role-desc">Kelola operasional</div>
             </a>
+            
+            <a href="<?= base_url('dashboard/login_kasir') ?>" class="role-card">
+                <div class="role-icon">
+                    <i class="fas fa-cash-register"></i>
+                </div>
+                <div class="role-title">Kasir</div>
+                <div class="role-desc">Kelola transaksi</div>
+            </a>
         </div>
         
         <div class="footer">
