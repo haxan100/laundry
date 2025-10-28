@@ -573,10 +573,29 @@ class Owner extends MY_Controller
 
     public function get_dashboard_stats()
     {
+        // Get recent orders (5 latest)
+        $this->db->select('t.*, c.nama as customer_nama');
+        $this->db->from('transaksi t');
+        $this->db->join('customers c', 't.id_customer = c.id_customer', 'left');
+        $this->db->order_by('t.created_at', 'DESC');
+        $this->db->limit(5);
+        $recent_orders = $this->db->get()->result();
+        
+        // Get monthly revenue (completed transactions only)
+        $this->db->select('SUM(total) as monthly_revenue');
+        $this->db->from('transaksi');
+        $this->db->where('status', 'completed');
+        $this->db->where('MONTH(created_at)', date('m'));
+        $this->db->where('YEAR(created_at)', date('Y'));
+        $revenue_result = $this->db->get()->row();
+        $monthly_revenue = $revenue_result ? $revenue_result->monthly_revenue : 0;
+        
         $data = [
             'totalCustomers' => $this->DashboardModel->getTotalCustomers(),
             'totalOrdersThisMonth' => $this->DashboardModel->getTotalOrdersThisMonth(),
-            'pendingOrders' => $this->DashboardModel->getPendingOrders()
+            'pendingOrders' => $this->DashboardModel->getPendingOrders(),
+            'recentOrders' => $recent_orders,
+            'monthlyRevenue' => $monthly_revenue
         ];
         
         echo json_encode(['status' => 'success', 'data' => $data]);

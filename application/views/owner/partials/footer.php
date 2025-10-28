@@ -164,13 +164,66 @@
                         $('#ordersThisMonth').text(response.data.totalOrdersThisMonth);
                         $('#totalCustomers').text(response.data.totalCustomers);
                         $('#pendingOrders').text(response.data.pendingOrders);
+                        
+                        // Update monthly revenue
+                        const revenue = response.data.monthlyRevenue || 0;
+                        $('#monthlyRevenue').text('Rp ' + new Intl.NumberFormat('id-ID').format(revenue));
+                        
+                        // Update recent orders table
+                        updateRecentOrdersTable(response.data.recentOrders);
                     }
                 },
                 error: function() {
                     $('#ordersThisMonth').text('Error');
                     $('#totalCustomers').text('Error');
                     $('#pendingOrders').text('Error');
+                    $('#monthlyRevenue').text('Error');
                 }
+            });
+        }
+        
+        function updateRecentOrdersTable(orders) {
+            const tbody = $('#recentOrdersTable');
+            tbody.empty();
+            
+            if (!orders || orders.length === 0) {
+                tbody.append('<tr><td colspan="6" class="text-center text-muted">Belum ada transaksi</td></tr>');
+                return;
+            }
+            
+            orders.forEach(function(order) {
+                const statusColors = {
+                    'pending': 'warning',
+                    'process': 'info',
+                    'completed': 'success',
+                    'cancelled': 'danger'
+                };
+                
+                const customerName = order.customer_nama || order.nama_customer || 'Tamu';
+                const initial = customerName.charAt(0).toUpperCase();
+                const date = new Date(order.created_at).toLocaleDateString('id-ID');
+                const total = new Intl.NumberFormat('id-ID').format(order.total);
+                
+                const row = `
+                    <tr>
+                        <td><strong>${order.kode_transaksi}</strong></td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-xs me-2">
+                                    <div class="avatar-title rounded-circle bg-primary text-white">
+                                        ${initial}
+                                    </div>
+                                </div>
+                                <span>${customerName}</span>
+                            </div>
+                        </td>
+                        <td>${order.tier_laundry || 'Laundry'}</td>
+                        <td>Rp ${total}</td>
+                        <td><span class="badge bg-${statusColors[order.status] || 'secondary'}">${order.status.charAt(0).toUpperCase() + order.status.slice(1)}</span></td>
+                        <td>${date}</td>
+                    </tr>
+                `;
+                tbody.append(row);
             });
         }
     </script>
