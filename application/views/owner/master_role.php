@@ -11,387 +11,351 @@
                         </div>
                     </div>
 
-                    <!-- Stats Overview -->
-                    <div class="row mb-4">
-                        <div class="col-xl-3 col-md-6 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="bg-primary text-white rounded-3 p-3">
-                                            <i class="mdi mdi-shield-account font-size-20"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <div class="stats-number"><?= count($roles) ?></div>
-                                        <div class="text-muted">Total Role</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="bg-success text-white rounded-3 p-3">
-                                            <i class="mdi mdi-account-multiple font-size-20"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <div class="stats-number"><?= count($roles) > 0 ? count($roles) : 0 ?></div>
-                                        <div class="text-muted">Active Roles</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="bg-info text-white rounded-3 p-3">
-                                            <i class="mdi mdi-security font-size-20"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <div class="stats-number">4</div>
-                                        <div class="text-muted">Permission Types</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6 mb-3">
-                            <div class="stats-card">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-shrink-0">
-                                        <div class="bg-warning text-white rounded-3 p-3">
-                                            <i class="mdi mdi-cog font-size-20"></i>
-                                        </div>
-                                    </div>
-                                    <div class="flex-grow-1 ms-3">
-                                        <div class="stats-number">System</div>
-                                        <div class="text-muted">Management</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Role Data -->
+                    <!-- Role Table -->
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <h5 class="card-title mb-0">Data Role</h5>
-                                        <button type="button" class="btn btn-primary" onclick="addRole()">
-                                            <i class="mdi mdi-plus me-1"></i>Tambah Role
+                                        <h5 class="card-title mb-0">Daftar Role</h5>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addRoleModal">
+                                            <i class="mdi mdi-plus"></i> Tambah Role
                                         </button>
                                     </div>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table id="roleTable" class="table table-hover mb-0">
+                                        <table class="table table-hover" id="roleTable">
                                             <thead>
                                                 <tr>
-                                                    <th>Role</th>
+                                                    <th>No</th>
+                                                    <th>Nama Role</th>
+                                                    <th>Deskripsi</th>
                                                     <th>Permissions</th>
-                                                    <th>Created</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
+                                            <tbody>
+                                                <!-- Data will be loaded via AJAX -->
+                                            </tbody>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
 
+<!-- Add Role Modal -->
+<div class="modal fade" id="addRoleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Role</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="addRoleForm">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Role</label>
+                        <input type="text" class="form-control" name="nama_role" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea class="form-control" name="deskripsi" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Permissions</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_role" id="add_master_role">
+                                    <label class="form-check-label" for="add_master_role">Master Role</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_admin" id="add_master_admin">
+                                    <label class="form-check-label" for="add_master_admin">Master Admin</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_customer" id="add_master_customer">
+                                    <label class="form-check-label" for="add_master_customer">Master Customer</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_kasir" id="add_master_kasir">
+                                    <label class="form-check-label" for="add_master_kasir">Master Kasir</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_transaksi" id="add_master_transaksi">
+                                    <label class="form-check-label" for="add_master_transaksi">Master Transaksi</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="setting_discount" id="add_setting_discount">
+                                    <label class="form-check-label" for="add_setting_discount">Setting Diskon Tier</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="setting_harga" id="add_setting_harga">
+                                    <label class="form-check-label" for="add_setting_harga">Setting Harga</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Role Modal -->
+<div class="modal fade" id="editRoleModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Role</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editRoleForm">
+                <input type="hidden" name="id" id="editRoleId">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Role</label>
+                        <input type="text" class="form-control" name="nama_role" id="editNamaRole" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea class="form-control" name="deskripsi" id="editDeskripsi" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Permissions</label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_role" id="edit_master_role">
+                                    <label class="form-check-label" for="edit_master_role">Master Role</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_admin" id="edit_master_admin">
+                                    <label class="form-check-label" for="edit_master_admin">Master Admin</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_customer" id="edit_master_customer">
+                                    <label class="form-check-label" for="edit_master_customer">Master Customer</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_kasir" id="edit_master_kasir">
+                                    <label class="form-check-label" for="edit_master_kasir">Master Kasir</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="master_transaksi" id="edit_master_transaksi">
+                                    <label class="form-check-label" for="edit_master_transaksi">Master Transaksi</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="setting_discount" id="edit_setting_discount">
+                                    <label class="form-check-label" for="edit_setting_discount">Setting Diskon Tier</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="permissions[]" value="setting_harga" id="edit_setting_harga">
+                                    <label class="form-check-label" for="edit_setting_harga">Setting Harga</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <?php $this->load->view('owner/partials/footer'); ?>
 
 <script>
-    let roleTable;
+$(document).ready(function() {
+    loadRoles();
     
-    $(document).ready(function() {
-        roleTable = $('#roleTable').DataTable({
-            processing: true,
-            serverSide: false,
-            ajax: {
-                url: '<?= base_url('owner/get_roles_ajax') ?>',
-                type: 'GET',
-                dataSrc: ''
-            },
-            columns: [
-                {
-                    data: null,
-                    render: function(data, type, row) {
-                        return `
-                            <div class="d-flex align-items-center">
-                                <div class="bg-info text-white rounded-3 p-2 me-3">
-                                    <i class="mdi mdi-shield-account"></i>
-                                </div>
-                                <div>
-                                    <strong>${row.nama_role}</strong>
-                                    <br><small class="text-muted">Role ID: ${row.id_role}</small>
-                                </div>
-                            </div>
-                        `;
-                    }
-                },
-                {
-                    data: 'permissions',
-                    render: function(data, type, row) {
-                        if (!data) return '-';
-                        try {
-                            const permissions = JSON.parse(data);
-                            return permissions.map(p => `<span class="badge bg-primary me-1">${p}</span>`).join('');
-                        } catch(e) {
-                            return '-';
-                        }
-                    }
-                },
-                {
-                    data: 'created_at',
-                    render: function(data, type, row) {
-                        if (!data) return '-';
-                        const date = new Date(data);
-                        return `<small class="text-muted">${date.toLocaleDateString('id-ID')}</small>`;
-                    }
-                },
-                {
-                    data: null,
-                    orderable: false,
-                    render: function(data, type, row) {
-                        return `
-                            <button class="btn btn-info btn-sm me-1" onclick="viewRole(${row.id_role})">
-                                <i class="mdi mdi-eye"></i>
-                            </button>
-                            <button class="btn btn-warning btn-sm me-1" onclick="editRole(${row.id_role})">
-                                <i class="mdi mdi-pencil"></i>
-                            </button>
-                            <button class="btn btn-danger btn-sm" onclick="deleteRole(${row.id_role})">
-                                <i class="mdi mdi-delete"></i>
-                            </button>
-                        `;
-                    }
-                }
-            ],
-            language: {
-                processing: "Memuat data...",
-                lengthMenu: "Tampilkan _MENU_ data",
-                zeroRecords: "Data tidak ditemukan",
-                info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                infoEmpty: "Menampilkan 0 sampai 0 dari 0 data",
-                infoFiltered: "(disaring dari _MAX_ total data)",
-                search: "Cari:",
-                paginate: {
-                    first: "Pertama",
-                    last: "Terakhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya"
+    // Add Role Form
+    $('#addRoleForm').on('submit', function(e) {
+        e.preventDefault();
+        const permissions = [];
+        $('input[name="permissions[]"]:checked').each(function() {
+            permissions.push($(this).val());
+        });
+        
+        const formData = {
+            nama_role: $('input[name="nama_role"]').val(),
+            deskripsi: $('textarea[name="deskripsi"]').val(),
+            permissions: JSON.stringify(permissions)
+        };
+        
+        $.ajax({
+            url: '<?= base_url('owner/add_role') ?>',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    $('#addRoleModal').modal('hide');
+                    $('#addRoleForm')[0].reset();
+                    loadRoles();
+                    showSuccess(response.message);
+                } else {
+                    showError(response.message);
                 }
             }
         });
     });
     
-    function reloadTable() {
-        roleTable.ajax.reload(null, false);
-    }
-
-    function addRole() {
-        Swal.fire({
-            ...swalConfig,
-            title: 'Tambah Role Baru',
-            html: `
-                <div class="mb-3">
-                    <label class="form-label">Nama Role</label>
-                    <input type="text" class="form-control" id="role_nama" placeholder="Nama role">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Permissions</label>
-                    <div class="row">
-                        <div class="col-6">
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="perm_admin" value="master_admin">
-                                <label class="form-check-label" for="perm_admin">Master Admin</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="perm_role" value="master_role">
-                                <label class="form-check-label" for="perm_role">Master Role</label>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="perm_owner" value="master_owner">
-                                <label class="form-check-label" for="perm_owner">Master Owner</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="perm_customer" value="master_customer">
-                                <label class="form-check-label" for="perm_customer">Master Customer</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `,
-            showCancelButton: true,
-            confirmButtonText: 'Simpan',
-            cancelButtonText: 'Batal',
-            preConfirm: () => {
-                const nama = document.getElementById('role_nama').value;
-                const permissions = [];
-                document.querySelectorAll('#swal2-html-container input[type="checkbox"]:checked').forEach(cb => {
-                    permissions.push(cb.value);
-                });
-                
-                if (!nama) {
-                    Swal.showValidationMessage('Nama role harus diisi!');
-                    return false;
-                }
-                
-                return { nama, permissions };
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.post('<?= base_url('owner/add_role') ?>', {
-                    nama_role: result.value.nama,
-                    permissions: result.value.permissions
-                }, function(response) {
-                    const res = JSON.parse(response);
-                    if (res.status === 'success') {
-                        showSuccess(res.message);
-                        reloadTable();
-                    } else {
-                        showError(res.message);
-                    }
-                });
-            }
+    // Edit Role Form
+    $('#editRoleForm').on('submit', function(e) {
+        e.preventDefault();
+        const permissions = [];
+        $('#editRoleForm input[name="permissions[]"]:checked').each(function() {
+            permissions.push($(this).val());
         });
-    }
-
-    function viewRole(id) {
-        $.post('<?= base_url('owner/get_role') ?>', { id: id }, function(response) {
-            const res = JSON.parse(response);
-            if (res.status === 'success') {
-                const role = res.data;
-                const permissions = role.permissions ? role.permissions.map(p => `<span class="badge bg-primary me-1">${p}</span>`).join('') : '-';
-                
-                Swal.fire({
-                    ...swalConfig,
-                    title: 'Detail Role',
-                    html: `
-                        <div class="text-start">
-                            <table class="table table-borderless">
-                                <tr><td><strong>Nama Role:</strong></td><td>${role.nama_role}</td></tr>
-                                <tr><td><strong>Permissions:</strong></td><td>${permissions}</td></tr>
-                                <tr><td><strong>Dibuat:</strong></td><td>${role.created_at ? new Date(role.created_at).toLocaleString('id-ID') : '-'}</td></tr>
-                                <tr><td><strong>Diupdate:</strong></td><td>${role.updated_at ? new Date(role.updated_at).toLocaleString('id-ID') : '-'}</td></tr>
-                            </table>
-                        </div>
-                    `,
-                    showConfirmButton: false,
-                    showCancelButton: true,
-                    cancelButtonText: 'Tutup'
-                });
-            } else {
-                showError(res.message);
-            }
-        });
-    }
-
-    function editRole(id) {
-        $.post('<?= base_url('owner/get_role') ?>', { id: id }, function(response) {
-            const res = JSON.parse(response);
-            if (res.status === 'success') {
-                const role = res.data;
-                const permissions = role.permissions || [];
-                
-                Swal.fire({
-                    ...swalConfig,
-                    title: 'Edit Role',
-                    html: `
-                        <div class="mb-3">
-                            <label class="form-label">Nama Role</label>
-                            <input type="text" class="form-control" id="edit_nama" value="${role.nama_role}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Permissions</label>
-                            <div class="row">
-                                <div class="col-6">
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="edit_perm_admin" value="master_admin" ${permissions.includes('master_admin') ? 'checked' : ''}>
-                                        <label class="form-check-label" for="edit_perm_admin">Master Admin</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="edit_perm_role" value="master_role" ${permissions.includes('master_role') ? 'checked' : ''}>
-                                        <label class="form-check-label" for="edit_perm_role">Master Role</label>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="edit_perm_owner" value="master_owner" ${permissions.includes('master_owner') ? 'checked' : ''}>
-                                        <label class="form-check-label" for="edit_perm_owner">Master Owner</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="edit_perm_customer" value="master_customer" ${permissions.includes('master_customer') ? 'checked' : ''}>
-                                        <label class="form-check-label" for="edit_perm_customer">Master Customer</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `,
-                    showCancelButton: true,
-                    confirmButtonText: 'Update',
-                    cancelButtonText: 'Batal',
-                    preConfirm: () => {
-                        const nama = document.getElementById('edit_nama').value;
-                        const permissions = [];
-                        document.querySelectorAll('#swal2-html-container input[type="checkbox"]:checked').forEach(cb => {
-                            permissions.push(cb.value);
-                        });
-                        
-                        if (!nama) {
-                            Swal.showValidationMessage('Nama role harus diisi!');
-                            return false;
-                        }
-                        
-                        return { nama, permissions };
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.post('<?= base_url('owner/update_role') ?>', {
-                            id: id,
-                            nama_role: result.value.nama,
-                            permissions: result.value.permissions
-                        }, function(response) {
-                            const res = JSON.parse(response);
-                            if (res.status === 'success') {
-                                showSuccess(res.message);
-                                reloadTable();
-                            } else {
-                                showError(res.message);
-                            }
-                        });
-                    }
-                });
-            } else {
-                showError(res.message);
-            }
-        });
-    }
-
-    function deleteRole(id) {
-        confirmDelete(() => {
-            $.post('<?= base_url('owner/delete_role') ?>', { id: id }, function(response) {
-                const res = JSON.parse(response);
-                if (res.status === 'success') {
-                    showSuccess(res.message);
-                    reloadTable();
+        
+        const formData = {
+            id: $('#editRoleId').val(),
+            nama_role: $('#editNamaRole').val(),
+            deskripsi: $('#editDeskripsi').val(),
+            permissions: JSON.stringify(permissions)
+        };
+        
+        $.ajax({
+            url: '<?= base_url('owner/update_role') ?>',
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    $('#editRoleModal').modal('hide');
+                    loadRoles();
+                    showSuccess(response.message);
                 } else {
-                    showError(res.message);
+                    showError(response.message);
                 }
-            });
+            }
+        });
+    });
+});
+
+function loadRoles() {
+    $('#roleTable').DataTable({
+        destroy: true,
+        processing: true,
+        serverSide: false,
+        ajax: {
+            url: '<?= base_url('owner/get_roles_ajax') ?>',
+            type: 'GET',
+            dataSrc: ''
+        },
+        columns: [
+            { 
+                data: null,
+                render: function(data, type, row, meta) {
+                    return meta.row + 1;
+                }
+            },
+            { data: 'nama_role' },
+            { data: 'deskripsi' },
+            { 
+                data: 'permissions',
+                render: function(data, type, row) {
+                    if (!data) return '-';
+                    try {
+                        const permissions = JSON.parse(data);
+                        return permissions.map(p => `<span class="badge bg-info me-1">${p.replace('_', ' ')}</span>`).join('');
+                    } catch (e) {
+                        return data;
+                    }
+                }
+            },
+            {
+                data: null,
+                render: function(data, type, row) {
+                    return `
+                        <button class="btn btn-warning btn-sm" onclick="editRole(${row.id_role})">
+                            <i class="mdi mdi-pencil"></i>
+                        </button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteRole(${row.id_role})">
+                            <i class="mdi mdi-delete"></i>
+                        </button>
+                    `;
+                }
+            }
+        ]
+    });
+}
+
+function editRole(id) {
+    $.ajax({
+        url: '<?= base_url('owner/get_role') ?>',
+        type: 'POST',
+        data: { id: id },
+        dataType: 'json',
+        success: function(response) {
+            if (response.status === 'success') {
+                const data = response.data;
+                $('#editRoleId').val(data.id_role);
+                $('#editNamaRole').val(data.nama_role);
+                $('#editDeskripsi').val(data.deskripsi);
+                
+                // Clear all checkboxes first
+                $('#editRoleForm input[name="permissions[]"]').prop('checked', false);
+                
+                // Check permissions
+                if (data.permissions) {
+                    try {
+                        const permissions = JSON.parse(data.permissions);
+                        permissions.forEach(function(permission) {
+                            $('#edit_' + permission).prop('checked', true);
+                        });
+                    } catch (e) {
+                        console.log('Error parsing permissions:', e);
+                    }
+                }
+                
+                $('#editRoleModal').modal('show');
+            }
+        }
+    });
+}
+
+function deleteRole(id) {
+    if (confirm('Yakin ingin menghapus role ini?')) {
+        $.ajax({
+            url: '<?= base_url('owner/delete_role') ?>',
+            type: 'POST',
+            data: { id: id },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    loadRoles();
+                    showSuccess(response.message);
+                } else {
+                    showError(response.message);
+                }
+            }
         });
     }
+}
+
+function showSuccess(message) {
+    alert('Success: ' + message);
+}
+
+function showError(message) {
+    alert('Error: ' + message);
+}
 </script>

@@ -1,109 +1,44 @@
 <?php
-
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class RoleModel extends MY_Model
+class RoleModel extends CI_Model
 {
-	protected $table = 'roles'; // Nama tabel
-	protected $primaryKey = 'id_role'; // Primary key
+    private $table = 'roles';
 
-	public function getRolesWithPermissions()
-	{
-		// Mengambil semua data role dengan format yang cocok untuk ditampilkan
-		return $this->getAll();
-	}
-	public function addRole($data)
+    public function getAll()
     {
-        // Ambil semua kolom dari tabel role
-        $columns = $this->db->list_fields($this->table);
-
-        // Filter data berdasarkan kolom yang ada di tabel
-        $filteredData = array_filter(
-            $data,
-            function ($key) use ($columns) {
-                return in_array($key, $columns); // Hanya ambil data yang sesuai dengan kolom tabel
-            },
-            ARRAY_FILTER_USE_KEY
-        );
-
-        // Insert data ke dalam tabel
-        return $this->db->insert($this->table, $filteredData);
-    }
-	public function updateRolePermissions($id, $data)
-	{
-		return $this->update($id, $data);
-	}
-	public function deleteRoleById($id)
-	{
-		return $this->delete($id);
-	}
-	public function dt_roles($post)
-	{
-		$columns = $this->db->list_fields('roles'); // Ambil semua kolom tabel roles
-
-		$this->db->from('roles');
-		if (!empty($post['search']['value'])) {
-			$this->db->group_start();
-			foreach ($columns as $column) {
-				$this->db->or_like($column, $post['search']['value']);
-			}
-			$this->db->group_end();
-		}
-
-		$totalData = $this->db->count_all_results('', false);
-
-		if (isset($post['length']) && $post['length'] != -1) {
-			$this->db->limit($post['length'], $post['start']);
-		}
-
-		$query = $this->db->get();
-		return [
-			'totalData' => $totalData,
-			'data' => $query
-		];
-	}
-	public function findByIdR($table, $id)
-	{
-		$this->db->where('id_role', $id);
-		$query = $this->db->get($table);
-		return $query->row();
-	}
-
-	public function findById($tabel,$id,$row=true)
-	{
-		$this->db->where('id_role', $id);
-		$query = $this->db->get($tabel);
-		if ($row) {
-			return $query->row();
-		} else {
-			return $query->result();
-		}
-	}
-	public function countAdminsByRole($roleId)
-    {
-        $this->db->from('admin');
-        $this->db->where('id_role', $roleId);
-        return $this->db->count_all_results();
+        return $this->db->get($this->table)->result();
     }
 
-    public function insertRole($data)
-    {
-        return $this->db->insert($this->table, $data);
-    }
-
-    public function updateRole($id, $data)
-    {
-        return $this->db->where('id_role', $id)->update($this->table, $data);
-    }
-
-    public function deleteRole($id)
-    {
-        return $this->db->where('id_role', $id)->delete($this->table);
-    }
-
-    public function findRoleById($id)
+    public function getById($id)
     {
         return $this->db->get_where($this->table, ['id_role' => $id])->row();
     }
 
+    public function insert($data)
+    {
+        return $this->db->insert($this->table, $data);
+    }
+
+    public function update($id, $data)
+    {
+        $this->db->where('id_role', $id);
+        return $this->db->update($this->table, $data);
+    }
+
+    public function delete($id)
+    {
+        return $this->db->delete($this->table, ['id_role' => $id]);
+    }
+
+    public function hasPermission($role_id, $permission)
+    {
+        $role = $this->getById($role_id);
+        if (!$role || !$role->permissions) {
+            return false;
+        }
+        
+        $permissions = json_decode($role->permissions, true);
+        return in_array($permission, $permissions);
+    }
 }
