@@ -621,10 +621,10 @@ class Owner extends MY_Controller
         $start_date = $this->input->post('start_date') ?: date('Y-m-01');
         $end_date = $this->input->post('end_date') ?: date('Y-m-d');
         
-        $this->db->select('t.*, c.nama as customer_nama, c.tier_level as customer_tier, a.nama_lengkap as kasir_nama');
+        $this->db->select('t.*, c.nama as customer_nama, c.tier_level as customer_tier, k.nama_lengkap as kasir_nama');
         $this->db->from('transaksi t');
         $this->db->join('customers c', 't.id_customer = c.id_customer', 'left');
-        $this->db->join('admin a', 't.id_kasir = a.id_admin', 'left');
+        $this->db->join('kasir k', 't.id_kasir = k.id_kasir', 'left');
         $this->db->where('DATE(t.created_at) >=', $start_date);
         $this->db->where('DATE(t.created_at) <=', $end_date);
         $this->db->order_by('t.created_at', 'DESC');
@@ -637,10 +637,10 @@ class Owner extends MY_Controller
     {
         $id = $this->input->post('id');
         
-        $this->db->select('t.*, c.nama as customer_nama, c.tier_level as customer_tier, a.nama_lengkap as kasir_nama');
+        $this->db->select('t.*, c.nama as customer_nama, c.tier_level as customer_tier, k.nama_lengkap as kasir_nama');
         $this->db->from('transaksi t');
         $this->db->join('customers c', 't.id_customer = c.id_customer', 'left');
-        $this->db->join('admin a', 't.id_kasir = a.id_admin', 'left');
+        $this->db->join('kasir k', 't.id_kasir = k.id_kasir', 'left');
         $this->db->where('t.id_transaksi', $id);
         $transaksi = $this->db->get()->row();
         
@@ -648,6 +648,30 @@ class Owner extends MY_Controller
             echo json_encode(['status' => 'success', 'data' => $transaksi]);
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Transaksi tidak ditemukan']);
+        }
+    }
+
+    public function update_status_transaksi()
+    {
+        $id = $this->input->post('id');
+        $status = $this->input->post('status');
+        
+        $allowed_status = ['pending', 'process', 'completed', 'cancelled'];
+        if (!in_array($status, $allowed_status)) {
+            echo json_encode(['status' => 'error', 'message' => 'Status tidak valid']);
+            return;
+        }
+        
+        $data = [
+            'status' => $status,
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+        
+        $this->db->where('id_transaksi', $id);
+        if ($this->db->update('transaksi', $data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Status berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate status']);
         }
     }
 

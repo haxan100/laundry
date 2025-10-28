@@ -88,6 +88,45 @@
     </div>
 </div>
 
+<!-- Update Status Modal -->
+<div class="modal fade" id="statusModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Update Status Transaksi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="statusForm">
+                    <input type="hidden" id="transaksiId">
+                    <div class="mb-3">
+                        <label class="form-label">Kode Transaksi</label>
+                        <input type="text" class="form-control" id="kodeTransaksi" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status Saat Ini</label>
+                        <input type="text" class="form-control" id="currentStatus" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Status Baru</label>
+                        <select class="form-select" id="newStatus" required>
+                            <option value="">Pilih Status</option>
+                            <option value="pending">PENDING</option>
+                            <option value="process">PROCESS</option>
+                            <option value="completed">COMPLETED</option>
+                            <option value="cancelled">CANCELLED</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-primary" onclick="updateStatusFromModal()">Update Status</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $this->load->view('owner/partials/footer'); ?>
 
 
@@ -158,6 +197,7 @@
                         let badgeClass = 'secondary';
                         if (data === 'completed') badgeClass = 'success';
                         else if (data === 'pending') badgeClass = 'warning';
+                        else if (data === 'process') badgeClass = 'info';
                         else if (data === 'cancelled') badgeClass = 'danger';
                         
                         return '<span class="badge bg-' + badgeClass + '">' + data.toUpperCase() + '</span>';
@@ -172,7 +212,8 @@
                 {
                     data: null,
                     render: function(data, type, row) {
-                        return '<button class="btn btn-info btn-sm" onclick="viewDetail(' + row.id_transaksi + ')"><i class="mdi mdi-eye"></i></button>';
+                        return '<button class="btn btn-info btn-sm me-1" onclick="viewDetail(' + row.id_transaksi + ')"><i class="mdi mdi-eye"></i></button>' +
+                               '<button class="btn btn-warning btn-sm" onclick="openStatusModal(' + row.id_transaksi + ', \'' + row.status + '\', \'' + row.kode_transaksi + '\')" title="Update Status"><i class="mdi mdi-pencil"></i></button>';
                     }
                 }
             ],
@@ -301,5 +342,55 @@
                 showError('Gagal memuat detail transaksi');
             }
         });
+    }
+
+    function openStatusModal(id, currentStatus, kodeTransaksi) {
+        $('#transaksiId').val(id);
+        $('#kodeTransaksi').val(kodeTransaksi);
+        $('#currentStatus').val(currentStatus.toUpperCase());
+        $('#newStatus').val('');
+        $('#statusModal').modal('show');
+    }
+
+    function updateStatusFromModal() {
+        const id = $('#transaksiId').val();
+        const newStatus = $('#newStatus').val();
+        
+        if (!newStatus) {
+            alert('Harap pilih status baru');
+            return;
+        }
+        
+        $.ajax({
+            url: '<?= base_url('owner/update_status_transaksi') ?>',
+            type: 'POST',
+            data: { 
+                id: id, 
+                status: newStatus 
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.status === 'success') {
+                    showSuccess(response.message);
+                    $('#statusModal').modal('hide');
+                    $('#transaksiTable').DataTable().ajax.reload();
+                } else {
+                    showError(response.message);
+                }
+            },
+            error: function() {
+                showError('Gagal mengupdate status transaksi');
+            }
+        });
+    }
+
+    function showSuccess(message) {
+        // Simple alert for now - you can replace with toast notification
+        alert('Success: ' + message);
+    }
+
+    function showError(message) {
+        // Simple alert for now - you can replace with toast notification
+        alert('Error: ' + message);
     }
 </script>
