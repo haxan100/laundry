@@ -660,6 +660,90 @@ class Owner extends MY_Controller
         }
     }
 
+    public function master_kasir()
+    {
+        $obj['ci'] = $this;
+        $obj['page'] = 'master_kasir';
+        $obj['pageTitle'] = 'Master Kasir';
+        $this->load->view('owner/master_kasir', $obj);
+    }
+
+    public function get_kasir_ajax()
+    {
+        $this->load->model('KasirModel');
+        $kasir = $this->KasirModel->getAll();
+        echo json_encode($kasir);
+    }
+
+    public function add_kasir()
+    {
+        $this->load->model('KasirModel');
+        $data = [
+            'username' => $this->input->post('username'),
+            'password' => md5($this->input->post('password')),
+            'nama_lengkap' => $this->input->post('nama_lengkap'),
+            'email' => $this->input->post('email'),
+            'telepon' => $this->input->post('telepon'),
+            'alamat' => $this->input->post('alamat'),
+            'status' => 'aktif'
+        ];
+        
+        if ($this->KasirModel->insert($data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Kasir berhasil ditambahkan']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan kasir']);
+        }
+    }
+
+    public function get_kasir()
+    {
+        $this->load->model('KasirModel');
+        $id = $this->input->post('id');
+        $kasir = $this->KasirModel->getByIdWithPassword($id);
+        if ($kasir) {
+            echo json_encode(['status' => 'success', 'data' => $kasir]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Kasir tidak ditemukan']);
+        }
+    }
+
+    public function update_kasir()
+    {
+        $this->load->model('KasirModel');
+        $id = $this->input->post('id');
+        $data = [
+            'username' => $this->input->post('username'),
+            'nama_lengkap' => $this->input->post('nama_lengkap'),
+            'email' => $this->input->post('email'),
+            'telepon' => $this->input->post('telepon'),
+            'alamat' => $this->input->post('alamat'),
+            'status' => $this->input->post('status'),
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+        
+        if ($this->input->post('password')) {
+            $data['password'] = md5($this->input->post('password'));
+        }
+        
+        if ($this->KasirModel->update($id, $data)) {
+            echo json_encode(['status' => 'success', 'message' => 'Kasir berhasil diupdate']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal mengupdate kasir']);
+        }
+    }
+
+    public function delete_kasir()
+    {
+        $this->load->model('KasirModel');
+        $id = $this->input->post('id');
+        
+        if ($this->KasirModel->delete($id)) {
+            echo json_encode(['status' => 'success', 'message' => 'Kasir berhasil dihapus']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal menghapus kasir']);
+        }
+    }
+
     public function logout()
     {
         $this->session->sess_destroy();

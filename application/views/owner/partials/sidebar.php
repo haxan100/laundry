@@ -41,6 +41,13 @@
                     </a>
                 </li>
 
+                <li class="<?= ($this->uri->segment(2) == 'master_kasir') ? 'mm-active' : '' ?>">
+                    <a href="<?= base_url('owner/master_kasir') ?>" class="waves-effect">
+                        <i class="mdi mdi-account-cash"></i>
+                        <span>Master Kasir</span>
+                    </a>
+                </li>
+
                 <li class="<?= ($this->uri->segment(2) == 'master_transaksi') ? 'mm-active' : '' ?>">
                     <a href="<?= base_url('owner/master_transaksi') ?>" class="waves-effect">
                         <i class="mdi mdi-receipt"></i>
