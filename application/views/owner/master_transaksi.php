@@ -242,12 +242,20 @@
         const endDate = $('#endDate').val();
         
         if (!startDate || !endDate) {
-            alert('Harap pilih tanggal mulai dan tanggal akhir');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Harap pilih tanggal mulai dan tanggal akhir'
+            });
             return;
         }
         
         if (startDate > endDate) {
-            alert('Tanggal mulai tidak boleh lebih besar dari tanggal akhir');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Tanggal mulai tidak boleh lebih besar dari tanggal akhir'
+            });
             return;
         }
         
@@ -335,11 +343,19 @@
                     $('#detailContent').html(html);
                     $('#detailModal').modal('show');
                 } else {
-                    showError(response.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message
+                    });
                 }
             },
             error: function() {
-                showError('Gagal memuat detail transaksi');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Gagal memuat detail transaksi'
+                });
             }
         });
     }
@@ -357,7 +373,11 @@
         const newStatus = $('#newStatus').val();
         
         if (!newStatus) {
-            alert('Harap pilih status baru');
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Harap pilih status baru'
+            });
             return;
         }
         
@@ -371,26 +391,32 @@
             dataType: 'json',
             success: function(response) {
                 if (response.status === 'success') {
-                    showSuccess(response.message);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
                     $('#statusModal').modal('hide');
                     $('#transaksiTable').DataTable().ajax.reload();
                 } else {
-                    showError(response.message);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message
+                    });
                 }
             },
             error: function() {
-                showError('Gagal mengupdate status transaksi');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Gagal mengupdate status transaksi'
+                });
             }
         });
     }
 
-    function showSuccess(message) {
-        // Simple alert for now - you can replace with toast notification
-        alert('Success: ' + message);
-    }
 
-    function showError(message) {
-        // Simple alert for now - you can replace with toast notification
-        alert('Error: ' + message);
-    }
 </script>
