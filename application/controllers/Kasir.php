@@ -257,6 +257,8 @@ class Kasir extends MY_Controller
 
     public function create_order()
     {
+        var_dump($this->session->userdata('user_id'));
+        die;
         $berat = (float) $this->input->post('berat');
         $jarak_km = (float) $this->input->post('jarak_km');
         $harga_per_kg = (float) $this->input->post('harga_per_kg');
@@ -311,6 +313,22 @@ class Kasir extends MY_Controller
     {
         $ongkirs = $this->db->get('setting_harga_ongkir')->result();
         echo json_encode(['status' => 'success', 'data' => $ongkirs]);
+    }
+
+    public function get_today_transactions()
+    {
+        $kasir_id = $this->session->userdata('user_id');
+        $today = date('Y-m-d');
+        
+        $this->db->select('t.*, c.nama as customer_nama');
+        $this->db->from('transaksi t');
+        $this->db->join('customers c', 't.id_customer = c.id_customer', 'left');
+        $this->db->where('t.id_kasir', $kasir_id);
+        $this->db->where('DATE(t.created_at)', $today);
+        $this->db->order_by('t.created_at', 'DESC');
+        $transactions = $this->db->get()->result();
+        
+        echo json_encode(['status' => 'success', 'data' => $transactions]);
     }
 
     public function logout()

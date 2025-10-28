@@ -838,14 +838,12 @@
                 <div class="transaction-info">
                     <div class="today-stats animate-pulse" id="todayStatsContainer">
                         <i class="fas fa-chart-line me-2"></i>
-                        <span>Transaksi Hari Ini: <strong><?= $today_transactions ?></strong></span>
-                        <?php if ($today_transactions > 3): ?>
-                            <div class="mt-2">
-                                <a href="<?= base_url('kasir/transactions') ?>" class="btn btn-sm btn-outline-light">
-                                    <i class="fas fa-list me-1"></i>Lihat Transaksi Lainnya
-                                </a>
-                            </div>
-                        <?php endif; ?>
+                        <span>Transaksi Hari Ini: <strong id="todayTransactionCount"><?= $today_transactions ?></strong></span>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-outline-light" onclick="toggleTodayTransactions()">
+                                <i class="fas fa-list me-1"></i>Lihat Transaksi Hari Ini
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="user-info">
@@ -1042,6 +1040,39 @@
                 <button class="checkout-btn btn-secondary" id="checkoutBtn" disabled>
                     <i class="fas fa-check me-2"></i>Proses Transaksi
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Today's Transactions Modal -->
+    <div class="modal fade" id="todayTransactionsModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transaksi Hari Ini</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="todayTransactionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Kode</th>
+                                    <th>Customer</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Waktu</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6" class="text-center">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1793,6 +1824,71 @@
 
         function formatNumber(num) {
             return new Intl.NumberFormat('id-ID').format(num);
+        }
+        
+        function toggleTodayTransactions() {
+            loadTodayTransactions();
+            $('#todayTransactionsModal').modal('show');
+        }
+        
+        function loadTodayTransactions() {
+            $.ajax({
+                url: '<?= base_url("kasir/get_today_transactions") ?>',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success') {
+                        updateTodayTransactionsTable(response.data);
+                        $('#todayTransactionCount').text(response.data.length);
+                    }
+                },
+                error: function() {
+                    $('#todayTransactionsTable tbody').html('<tr><td colspan="6" class="text-center text-danger">Error loading data</td></tr>');
+                }
+            });
+        }
+        
+        function updateTodayTransactionsTable(transactions) {
+            const tbody = $('#todayTransactionsTable tbody');
+            tbody.empty();
+            
+            if (!transactions || transactions.length === 0) {
+                tbody.append('<tr><td colspan="6" class="text-center text-muted">Belum ada transaksi hari ini</td></tr>');
+                return;
+            }
+            
+            transactions.forEach(function(trx) {
+                const statusColors = {
+                    'pending': 'warning',
+                    'process': 'info',
+                    'completed': 'success',
+                    'cancelled': 'danger'
+                };
+                
+                const customerName = trx.customer_nama || trx.nama_customer || 'Tamu';
+                const time = new Date(trx.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'});
+                const total = new Intl.NumberFormat('id-ID').format(trx.total);
+                
+                const row = `
+                    <tr>
+                        <td><strong>${trx.kode_transaksi}</strong></td>
+                        <td>${customerName}</td>
+                        <td>Rp ${total}</td>
+                        <td><span class="badge bg-${statusColors[trx.status] || 'secondary'}">${trx.status.charAt(0).toUpperCase() + trx.status.slice(1)}</span></td>
+                        <td>${time}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary" onclick="printReceipt(${trx.id_transaksi})">
+                                <i class="fas fa-print"></i> Print
+                            </button>
+                        </td>
+                    </tr>
+                `;
+                tbody.append(row);
+            });
+        }
+        
+        function printReceipt(transactionId) {
+            window.open('<?= base_url("receipt/print_receipt/") ?>' + transactionId, '_blank', 'width=400,height=600');
         }
     </script>
 </body>
