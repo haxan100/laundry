@@ -12,11 +12,38 @@
         <div class="row">
             <div class="col-12">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h4 class="mb-0"><i class="fas fa-list me-2"></i>Transaksi Hari Ini</h4>
-                        <a href="<?= base_url('kasir') ?>" class="btn btn-light btn-sm">
-                            <i class="fas fa-arrow-left me-1"></i>Kembali ke POS
-                        </a>
+                    <div class="card-header bg-primary text-white">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="mb-0"><i class="fas fa-list me-2"></i>Transaksi Hari Ini</h4>
+                            <a href="<?= base_url('kasir') ?>" class="btn btn-light btn-sm">
+                                <i class="fas fa-arrow-left me-1"></i>Kembali ke POS
+                            </a>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="form-label text-white">Dari Tanggal:</label>
+                                <input type="date" class="form-control" id="startDate" value="<?= date('Y-m-d') ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-white">Sampai Tanggal:</label>
+                                <input type="date" class="form-control" id="endDate" value="<?= date('Y-m-d') ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-white">Export:</label>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-success btn-sm" id="exportExcel">
+                                        <i class="fas fa-file-excel me-1"></i>Excel
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" id="exportPdf">
+                                        <i class="fas fa-file-pdf me-1"></i>PDF
+                                    </button>
+                                    <button class="btn btn-warning btn-sm" id="filterBtn">
+                                        <i class="fas fa-filter me-1"></i>Filter
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         <!-- Date Filter -->
@@ -119,5 +146,47 @@
             </div>
         </div>
     </div>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#filterBtn').click(function() {
+                filterTransactions();
+            });
+            
+            $('#exportExcel').click(function() {
+                exportData('excel');
+            });
+            
+            $('#exportPdf').click(function() {
+                exportData('pdf');
+            });
+        });
+        
+        function filterTransactions() {
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+            
+            if (!startDate || !endDate) {
+                alert('Pilih tanggal terlebih dahulu!');
+                return;
+            }
+            
+            window.location.href = `<?= base_url('kasir/transactions') ?>?start=${startDate}&end=${endDate}`;
+        }
+        
+        function exportData(type) {
+            const startDate = $('#startDate').val();
+            const endDate = $('#endDate').val();
+            
+            if (!startDate || !endDate) {
+                alert('Pilih tanggal terlebih dahulu!');
+                return;
+            }
+            
+            window.open(`<?= base_url('kasir/export_transactions') ?>?type=${type}&start=${startDate}&end=${endDate}`, '_blank');
+        }
+    </script>
 </body>
 </html>

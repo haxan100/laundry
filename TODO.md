@@ -80,16 +80,12 @@
 ## 🎯 OPTIONAL ENHANCEMENTS (Future)
 
 ### 🟡 Medium Priority (If Needed)
-- [ ] WhatsApp Integration for Customer Notifications
 - [ ] Export Reports to Excel/PDF
 - [ ] Backup & Restore Data
-- [ ] Customer SMS Notifications
 
 ### 🟢 Low Priority (Nice to Have)
-- [ ] Mobile App for Customers
-- [ ] Barcode/QR Code for Tracking
+- [ ] WEB App for Customers
 - [ ] Advanced Analytics & Charts
-- [ ] Inventory Management
 
 ---
 
@@ -110,4 +106,4 @@ Fitur yang ada sudah mencakup semua kebutuhan dasar:
 ---
 
 *System Status: **PRODUCTION READY** ✅*  
-*Last Updated: December 2024*
+*Last Updated: OKtober 2025*

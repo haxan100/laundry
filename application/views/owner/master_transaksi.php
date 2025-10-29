@@ -42,6 +42,14 @@
                                 <div class="card-header">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <h5 class="card-title mb-0">Daftar Transaksi</h5>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-success btn-sm" id="exportExcel">
+                                                <i class="mdi mdi-file-excel me-1"></i>Excel
+                                            </button>
+                                            <button class="btn btn-danger btn-sm" id="exportPdf">
+                                                <i class="mdi mdi-file-pdf me-1"></i>PDF
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -129,10 +137,17 @@
 
 <?php $this->load->view('owner/partials/footer'); ?>
 
-
 <script>
     $(document).ready(function() {
         loadTransaksi();
+        
+        $('#exportExcel').click(function() {
+            exportData('excel');
+        });
+        
+        $('#exportPdf').click(function() {
+            exportData('pdf');
+        });
     });
 
     function loadTransaksi(startDate = null, endDate = null) {
@@ -417,6 +432,20 @@
             }
         });
     }
-
-
+    
+    function exportData(type) {
+        const startDate = $('#startDate').val();
+        const endDate = $('#endDate').val();
+        
+        if (!startDate || !endDate) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Peringatan!',
+                text: 'Pilih tanggal terlebih dahulu!'
+            });
+            return;
+        }
+        
+        window.open(`<?= base_url('export/transactions') ?>?type=${type}&start_date=${startDate}&end_date=${endDate}`, '_blank');
+    }
 </script>

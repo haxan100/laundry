@@ -810,6 +810,8 @@ class Owner extends MY_Controller
         }
     }
 
+
+
     public function logout()
     {
         $this->session->unset_userdata(['user_id', 'username', 'user_type', 'nama_lengkap', 'id_role', 'permissions']);
