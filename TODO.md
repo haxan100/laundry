@@ -36,6 +36,7 @@
 - [x] Kasir Dashboard (Transaction Counter)
 - [x] Real-time Statistics
 - [x] Monthly Revenue Tracking
+- [x] Export Transactions to Excel/PDF
 
 ### 🎯 Business Features
 - [x] Customer Tier System (4 Levels)
@@ -80,7 +81,7 @@
 ## 🎯 OPTIONAL ENHANCEMENTS (Future)
 
 ### 🟡 Medium Priority (If Needed)
-- [ ] Export Reports to Excel/PDF
+- [x] Export Reports to Excel/PDF (Owner Transactions)
 - [ ] Backup & Restore Data
 
 ### 🟢 Low Priority (Nice to Have)
@@ -106,4 +107,4 @@ Fitur yang ada sudah mencakup semua kebutuhan dasar:
 ---
 
 *System Status: **PRODUCTION READY** ✅*  
-*Last Updated: OKtober 2025*
+*Last Updated: Januari 2025*
