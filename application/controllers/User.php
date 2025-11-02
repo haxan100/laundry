@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User extends CI_Controller {
+class User extends MY_Controller {
 
     public function __construct()
     {
@@ -17,10 +17,10 @@ class User extends CI_Controller {
 
     public function check_transaction()
     {
-        $phone = $this->input->post('phone');
+        $phone = validate_input($this->input->post('phone'), 'phone');
         
         if (!$phone) {
-            echo json_encode(['status' => 'error', 'message' => 'Nomor telepon harus diisi']);
+            echo json_encode(['status' => 'error', 'message' => 'Nomor telepon tidak valid']);
             return;
         }
         
@@ -52,7 +52,7 @@ class User extends CI_Controller {
 
     public function get_transaction_detail()
     {
-        $id = $this->input->post('id');
+        $id = validate_input($this->input->post('id'), 'numeric');
         
         $this->db->select('t.*, c.nama as customer_nama, c.tier_level as customer_tier, k.nama_lengkap as kasir_nama');
         $this->db->from('transaksi t');

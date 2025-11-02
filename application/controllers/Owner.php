@@ -301,11 +301,11 @@ class Owner extends MY_Controller
         }
         
         $data = [
-            'nama' => $this->input->post('nama'),
-            'email' => $this->input->post('email'),
-            'telepon' => $this->input->post('telepon'),
-            'password' => md5($this->input->post('password')),
-            'tier_level' => $this->input->post('tier_level'),
+            'nama' => validate_input($this->input->post('nama')),
+            'email' => validate_input($this->input->post('email'), 'email'),
+            'telepon' => validate_input($this->input->post('telepon'), 'phone'),
+            'password' => md5(validate_input($this->input->post('password'))),
+            'tier_level' => validate_input($this->input->post('tier_level'), 'alphanumeric'),
             'created_at' => date('Y-m-d H:i:s')
         ];
         
@@ -653,8 +653,8 @@ class Owner extends MY_Controller
 
     public function update_status_transaksi()
     {
-        $id = $this->input->post('id');
-        $status = $this->input->post('status');
+        $id = validate_input($this->input->post('id'), 'numeric');
+        $status = validate_input($this->input->post('status'), 'alphanumeric');
         
         $allowed_status = ['pending', 'process', 'completed', 'cancelled'];
         if (!in_array($status, $allowed_status)) {
